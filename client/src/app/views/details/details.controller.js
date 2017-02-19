@@ -62,7 +62,6 @@
         moment) {
         var vm = this;
 
-        ModalService.add('enterIdModalDetails');
         ModalService.add('invalidId');
         ModalService.add('errorModal');
         ModalService.compile();
@@ -179,7 +178,7 @@
                 message: 'Failed to checkin asset.'
             };
             $rootScope.errorModalText(err);
-            ModalService.get('enterIdModalDetails').open();
+            vm.switchView('validationView');
             vm.loadingState = 'contentSuccess';
         }
 

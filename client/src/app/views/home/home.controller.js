@@ -94,6 +94,19 @@
         vm.isOnDevice = UtilService.isOnDevice();
 
         /**
+         * Sets a class to change the amount of padding at the top of the home page depending on whether or not
+         * the scan button is displayed.
+         * @returns {*} -- name of the class used to set the amount of padding
+         */
+        vm.scanButtonPadding = function() {
+            if (vm.isOnDevice) {
+                return 'scan-button-padding';
+            } else {
+                return 'no-scan-button-padding';
+            }
+        };
+
+        /**
          * Opens the scanner
          *
          * TODO $rootScope is not preferred here
@@ -109,7 +122,7 @@
                         vm.scanFail(error);
                     });
             } else {
-                ModalService.get('enterIdModal').open();
+                ModalService.get('scannerError').open();
             }
         };
 

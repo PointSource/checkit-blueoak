@@ -4,14 +4,6 @@
  -->
 
 <!-- Modals -->
-<!-- enter id modal USED ONLY ON WEBSITE VERSION -->
-<!-- Must be in here and not in modals.template.html as it utilizes 'vm' -->
-<div class="reveal large text-center" data-reveal id="enterIdModalDetails">
-    <h1>Input device ID</h1>
-    <input type="text" ng-model="inputValue" placeholder="enter text..." />
-    <div ng-click="vm.scanSuccess({cancelled: false, text: inputValue})">Submit</div>
-    <div data-close style="float: right;">Cancel</div>
-</div>
 <div class="reveal large text-center" data-reveal id="invalidId">
     <h1 class="error-message">Invalid ID</h1>
     <div data-close class="secondary button">Okay</div>
