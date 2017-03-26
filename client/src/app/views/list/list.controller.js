@@ -5,7 +5,7 @@
  * This file holds the definition for the list controller for the list page.
  */
 
-(function() {
+(function () {
     'use strict';
 
     angular
@@ -33,7 +33,7 @@
 
         var vm = this;
 
-        vm.getData = function() {
+        vm.getData = function () {
             vm.loadingState = '';
             if (type !== 'all') {
                 AssetService.getAssets(type, null).then(listSuccess, listFail); //100ms
@@ -50,7 +50,7 @@
          */
         function listSuccess(data) {
             vm.list = data;
-            $timeout(function() {
+            $timeout(function () {
                 vm.loadingState = 'contentSuccess';
             }, 100);
         }

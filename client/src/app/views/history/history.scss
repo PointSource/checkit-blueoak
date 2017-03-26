@@ -1,0 +1,51 @@
+.chronological-history {
+    font-weight: 300;
+    @include scrollable-parent(0, 0, 0, 0);
+    .history-date-range-text {
+        text-align: center;
+        font-size: 18px;
+        padding: 10px 0;
+    }
+    .records {
+        width: 100%;
+        height: calc(100% - 38px);
+        overflow: auto;
+        .checkit-list-light {
+            background-color: $checkit-list-light;
+        }
+        .checkit-list-dark {
+            background-color: $checkit-list-dark;
+        }
+        .record {
+            height: 70px;
+            padding: 10px;
+            .record-title {
+                width: 100%;
+                font-size: 20px;
+                padding-bottom: 5px;
+                text-align: center;
+            }
+            .record-date {
+                width: 50%;
+                font-size: 16px;
+                padding-bottom: 5px;
+                float: left;
+                text-align: left;
+            }
+            .record-name {
+                width: 50%;
+                font-size: 16px;
+                padding-bottom: 5px;
+                float: right;
+                text-align: right;
+            }
+            .checked-out-by {
+                color: $checkit-subcolor
+            }
+        }
+        .largeRecord {
+            @extend .record;
+            height: 90px;
+        }
+    }
+}
