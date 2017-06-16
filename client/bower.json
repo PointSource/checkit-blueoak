@@ -18,7 +18,7 @@
     "ngSmoothScroll": "~2.0.0",
     "ng-file-upload": "~10.1.14",
     "angular-ui-router": "^0.2.18",
-    "angular-animate": "^1.5.1",
+    "angular-animate": "1.4.x",
     "foundation-sites": "6.2.x",
     "motion-ui": "^1.2.2",
     "animate.css": "^3.5.1"

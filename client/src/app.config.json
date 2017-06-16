@@ -1,6 +1,6 @@
 {
     "local": {
-        "apiHost": "",
+        "apiHost": "http://localhost:3000/",
         "assetEnum": {
             "os": ["iOS", "Android", "Windows", "WatchOS", "FireOS", "OSX", "N/A"],
             "type": ["phone", "tablet", "laptop", "camera", "webcam", "projector", "watch", "misc"],

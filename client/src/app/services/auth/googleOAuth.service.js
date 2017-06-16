@@ -37,18 +37,21 @@
         var _this = this;
         _this.onDevice = true; //default to true
 
-        function buildObject(data) {
+        function buildObject(user) {
             /*jshint camelcase: false */
 
+            var userAuth = user.getAuthResponse();
+            var userProf = user.getBasicProfile();
+
             return {
-                accessToken: data.hg.access_token,
-                displayName: data.wc.wc,
-                email: data.wc.hg,
-                idToken: data.hg.id_token,
-                imageUrl: data.wc.Ph,
+                accessToken: userAuth.access_token,
+                displayName: userProf.getName(),
+                email: userProf.getEmail(),
+                idToken: userAuth.id_token,
+                imageUrl: userProf.getImageUrl(),
                 oauthToken: '', //no oauthToken will be received
                 refreshToken: '', //no refreshToken received right now
-                userId: data.El
+                userId: userProf.getId()
             };
         }
 
@@ -102,7 +105,7 @@
                 } else {
                     _this.auth.signIn().then(
                         function(data) {
-                            q.resolve(buildObject(data));
+                            q.resolve(buildObject(gapi.auth2.getAuthInstance().currentUser.get()));
                         },
                         function(err) {
                             q.reject(err);
