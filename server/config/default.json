@@ -48,16 +48,16 @@
     },
     "mongodb": { //Mongo db credentials
         "isTestDB": false, //this would be false in production or testing the actual database
-        "isQADB": true, //this would be false in production or testing the actual database
-        "host": "", //The host of the mongo db
-        "port": "", //Mongo port
-        "db": "", //The database
-        "username": "", //Database username
-        "pwd": "" //database encrypted password
+        "isQADB": false, //this would be false in production or testing the actual database
+        "host": "SET_MONGODB_HOST_HERE", //The host of the mongo db
+        "port": "SET_MONGODB_PORT_HERE", //Mongo port
+        "db": "SET_MONGODB_DB_HERE", //The database
+        "username": "SET_MONGODB_USERNAME_HERE", //Database username
+        "pwd": "SET_MONGODB_PASSWORD_HERE" //database encrypted password
     },
     "google": {
-        "clientSecret": "", // the google client secret
-        "clientId": "" // the google client id
+        "clientSecret": "SET_GOOGLE_CLIENT_SECRET_HERE", // the google client secret
+        "clientId": "SET_GOOGLE_CLIENT_ID_HERE" // the google client id
     },
     "assetLocations": {
         "Raleigh": {
@@ -69,5 +69,10 @@
     },
     //This is used during the authentication phase to only allow users from a certain company
     //Leave this field empty to allow any domain
-    "companyDomains": []
+    "companyDomains": [],
+    // WARNING: Storing the key in the config isn't secure!
+    "security": {
+        //When set, don't prompt during startup for password. When not set, password prompt will occur at startup.
+        "key": "SET_DECRYPTION_PASSWORD_HERE"
+    }
 }
