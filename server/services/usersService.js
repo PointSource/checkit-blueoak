@@ -10,10 +10,18 @@ var errors = require('../util/errors.js'),
     Record = mongoose.model('Record'),
     Asset = mongoose.model('Asset');
 
-var _logger;
+var _logger, _authService, domain;
 
-exports.init = function(logger, config, callback) {
+var google = require('googleapis');
+
+var adminServices = {};
+
+exports.init = function(logger, config, authService, callback) {
     _logger = logger;
+    _authService = authService;
+
+    domain = config.get('google').domain;
+
     callback();
 };
 
@@ -258,6 +266,31 @@ function removeUser(userID, callback) {
     });
 }
 
+/**
+ * A call to this endpoint returns all the users associated with the apps registered google account
+ */
+adminServices.getGoogleUsers = function(callback) {
+    _authService.getAuthClient(function(err, authClient){
+        if (err) {
+            return callback(new errors.DefaultError(500, 'Failed to authenticate the server with Google'));
+        } else {
+            var service = google.admin('directory_v1');
+            service.users.list({
+                domain: domain,
+                fields: 'users(primaryEmail, name)',
+                maxResults: 500, // Default is 100. Maximum is 500.
+                auth: authClient
+            }, function(err, profiles) {
+                if (err){
+                    return callback(new errors.DefaultError(err.code, 'Failed to retrieve the list of Google Users'));
+                } else {
+                    return callback(null, profiles);
+                }
+            });
+        }
+    });
+};
+
 
 exports.getAllUsers = getAllUsers;
 exports.getUserReservations = getUserReservations;
@@ -265,3 +298,5 @@ exports.getUserName = getUserName;
 exports.userExists = userExists;
 exports.addUser = addUser;
 exports.removeUser = removeUser;
+
+exports.adminServices = adminServices;

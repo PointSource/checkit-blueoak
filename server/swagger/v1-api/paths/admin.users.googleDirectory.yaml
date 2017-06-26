@@ -1,0 +1,20 @@
+get:
+  description: 'Returns an array of the currently signed in user''s `active_reservations`
+
+    '
+  operationId: getGoogleUsers
+  produces: [application/json]
+  responses:
+    '200':
+      description: returns an array of the google user's associated with this account
+      schema: {$ref: '../definitions/GoogleUsers.yaml'}
+    '401':
+      description: attempted to get list of google user's before authorization
+      schema: {$ref: '../definitions/AuthorizationError.yaml'}
+    default:
+      description: unexpected error
+      schema: {$ref: '../definitions/DefaultError.yaml'}
+  summary: User Reservations
+  tags: [Users]
+  x-middleware: [auth.authenticateHandler]
+x-handler: users
