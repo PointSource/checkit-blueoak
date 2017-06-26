@@ -11,6 +11,7 @@
     "dependencies": {
         "aws-sdk": "^2.1.43",
         "blueoak-server": "^2.0.1",
+        "googleapis": "^19.0.0",
         "gridfs-stream": "^1.1.1",
         "moment": "~2.9.0",
         "mongodb": "~2.0",

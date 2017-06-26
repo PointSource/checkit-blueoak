@@ -23,5 +23,16 @@ module.exports = {
                 res.status(200).send(result);
             }
         });
+    },
+    getGoogleUsers: function(req, res, next) {
+        _logger.info('GETing from /api/v1/admin/users/googleDirectory');
+        _usersService.adminServices.getGoogleUsers(function(err, result) {
+            if (err) {
+                _logger.error(err);
+                next(err);
+            } else {
+                res.status(200).send(result);
+            }
+        });
     }
 };
