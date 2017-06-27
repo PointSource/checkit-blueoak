@@ -23,7 +23,8 @@
     "csrf": {
         "credentials": true,
         "allowedOrigins": [
-            "http://localhost:3001"
+            "http://localhost:3001",
+            "file://"
         ]
     },
     "cors": {
