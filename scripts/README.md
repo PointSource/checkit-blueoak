@@ -49,5 +49,5 @@ set -x
 # Changes into the absolute path of the directory assigned to the build as a workspace in Jenkins
 cd $WORKSPACE
 # Runs the build-checkit.sh script on Jenkins
-. ./scripts/jenkins-build-checkit.sh
+. ./scripts/jenkins/jenkins-build-checkit.sh
 ```
