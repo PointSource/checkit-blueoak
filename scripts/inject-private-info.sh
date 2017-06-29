@@ -5,7 +5,7 @@
 # and the files should be sanitized before committing any other changes to the files.
 
 # Injects the API host into the client/src/app.config.json file
-sed -i "s|http://localhost:3000/|$API|g" $WORKSPACE/client/src/app.config.json
+sed -i "s|http://localhost:3000|$API|g" $WORKSPACE/client/src/app.config.json
 # Injects the API host into the server/config/default.json file
 sed -i "s|http://localhost:3001|$API|g" $WORKSPACE/server/config/default.json
 # Injects the Google client ID into the client/src/app.config.json file
