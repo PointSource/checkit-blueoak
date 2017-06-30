@@ -7,6 +7,7 @@ echo 'Collecting credentials for CheckIT'
 echo
 WORKSPACE=`pwd`
 read -p 'Enter the API host > ' API
+read -p 'Enter allowed origins > ' ALLOWED_ORIGINS
 read -p 'Enter the Google client ID > ' GOOGLE_CLIENT_ID
 read -p 'Enter the Google secret > ' GOOGLE_CLIENT_SECRET
 read -p 'Enter the Mongo DB host > ' MONGODB_HOST

@@ -7,7 +7,7 @@
 # Injects the API host into the client/src/app.config.json file
 sed -i "s|http://localhost:3000|$API|g" $WORKSPACE/client/src/app.config.json
 # Injects the API host into the server/config/default.json file
-sed -i "s|http://localhost:3001|$API|g" $WORKSPACE/server/config/default.json
+sed -i "s|http://localhost:3001|$ALLOWED_ORIGINS|g" $WORKSPACE/server/config/default.json
 # Injects the Google client ID into the client/src/app.config.json file
 sed -i "s|SET_GOOGLE_CLIENT_ID_HERE|$GOOGLE_CLIENT_ID|g" $WORKSPACE/client/src/app.config.json
 # Injects the Mongo DB host into the client/src/app.config.json file
