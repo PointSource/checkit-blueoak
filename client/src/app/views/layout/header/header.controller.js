@@ -46,6 +46,9 @@
                     case 'misc':
                         vm.title = title;
                         break;
+                    case 'checkedout':
+                        vm.title = 'checked out';
+                        break;
                     case 'edit':
                         vm.title = 'edit device';
                         break;
