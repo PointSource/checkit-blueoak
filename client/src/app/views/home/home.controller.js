@@ -100,7 +100,6 @@
          * instead in the future use a service/factor for scanner operations
          */
         $rootScope.openScanner = function() {
-
             if (vm.isOnDevice) {
                 //run scanner
                 $cordovaBarcodeScanner.scan()

@@ -24,13 +24,15 @@
         "credentials": true,
         "allowedOrigins": [
             "http://localhost:3001",
-            "file://"
+            "file://",
+            "http://editor.swagger.io"
         ]
     },
     "cors": {
         "credentials": true,
         "origin": [
-            "http://localhost:3001"
+            "http://localhost:3001",
+            "http://editor.swagger.io"
         ]
     },
     "session": {
@@ -56,9 +58,16 @@
         "username": "SET_MONGODB_USERNAME_HERE", //Database username
         "pwd": "SET_MONGODB_PASSWORD_HERE" //database encrypted password
     },
+
     "google": {
-        "clientSecret": "SET_GOOGLE_CLIENT_SECRET_HERE", // the google client secret
-        "clientId": "SET_GOOGLE_CLIENT_ID_HERE" // the google client id
+        "domain": "SET_DOMAIN_HERE",
+        "serviceAccount": {
+            "email" : "SET_SERVICE_ACCOUNT_EMAIL_HERE",
+            "keyFile" : "SET_SERVICE_ACCOUNT_KEY_FILE_PATH_HERE"
+        },
+        "serviceScopes" : ["https://www.googleapis.com/auth/admin.directory.group.member.readonly",
+                            "https://www.googleapis.com/auth/admin.directory.user.readonly"],
+        "appAccountEmail" : "SET_APP_ACCOUNT_EMAIL_HERE"
     },
     "assetLocations": {
         "Raleigh": {
