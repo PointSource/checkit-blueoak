@@ -6,9 +6,9 @@ The instructions below will get you set up to use CheckIT locally. For additiona
 
 ## Technology Frameworks
 
-Client side is AngularJS.
+Client side is written with AngularJS.
 
-Server side is Node.js built with Swagger.io, with MongoDB for the database.
+Server side is written with Node.js and built using Swagger.io for the endpoints. MongoDB is used as the database.
 
 BlueOakJS is used for the [server](https://github.com/BlueOakJS/blueoak-server), [build process](https://github.com/BlueOakJS/blueoak-build), and to [generate views](https://github.com/BlueOakJS/generator-blueoak).
 
@@ -16,7 +16,7 @@ For more information about different app components, [please refer to our wiki](
 
 ## Getting Started
 
-In order to use the CheckIT application, you will need the following programs on your computer:
+In order to use the CheckIT application, you will need the following programs on your computer (see below for instructions on how to install each of these):
 * Git
 * Node.js
 * Bower
@@ -71,7 +71,7 @@ The CheckIT application can be deployed on the following platforms:
 * iOS Deployment
 * Android Deployment
 
-To get the application running locally, first follow the installation instructions above. Then, in two separate terminal windows, navigate to the checkit folder and run the commands below.
+To get the application running locally, first follow the installation instructions above. Then, in two separate terminal windows, navigate to the checkit folder and run the commands below. Be sure to run the commands for "Terminal One" before running commands for "Terminal Two" to ensure the server will run on port 3000 (no other program can be running on port 3000).
 
 ```
 # Terminal One
