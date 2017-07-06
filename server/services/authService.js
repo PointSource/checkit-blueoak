@@ -16,10 +16,9 @@ var errors = require('../util/errors.js'),
     User = mongoose.model('User');
 var google = require('googleapis');
 var path = require('path');
-var url, _logger, serviceAccount, serviceScopes, appAccountEmail,
-companyDomains, 
-serviceAccountEmail, serviceAccountKeyFile, appAccountEmail;
 
+var url, _logger, serviceAccount, serviceScopes, appAccountEmail,
+companyDomains, serviceAccountEmail, serviceAccountKeyFile;
 
 exports.init = function(logger, config, callback) {
     url = 'https://www.googleapis.com';
