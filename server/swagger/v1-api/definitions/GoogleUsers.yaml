@@ -1,0 +1,14 @@
+items:
+  properties:
+    user:
+      properties:
+        email: {description: the Google email associated with this user, type: string}
+        name:
+            properties:
+              givenName: {description: the user's first name from Google, type: string}
+              familyName: {description: the user's last name from Google, type: string}
+              fullName: {description: the user's first and last name from Google, type: string}
+            type: object
+      type: object
+  type: object
+type: array

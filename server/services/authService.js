@@ -14,19 +14,27 @@ var authUtil = require('../util/authUtil.js');
 var errors = require('../util/errors.js'),
     mongoose = require('mongoose'),
     User = mongoose.model('User');
-var url, _logger, googleClientSecret, googleClientId, companyDomains;
+var google = require('googleapis');
+var path = require('path');
+
+var url, _logger, serviceAccount, serviceScopes, appAccountEmail,
+companyDomains, serviceAccountEmail, serviceAccountKeyFile;
 
 exports.init = function(logger, config, callback) {
     url = 'https://www.googleapis.com';
     _logger = logger;
-    googleClientSecret = config.get('google').clientSecret;
-    googleClientId = config.get('google').clientId;
+
+    serviceAccount = config.get('google').serviceAccount;
+    serviceScopes = config.get('google').serviceScopes;
+    appAccountEmail = config.get('google').appAccountEmail;
+
     companyDomains = config.get('companyDomains');
+
     callback();
 };
 
 /**
- * Main Google Authentication function
+ * Authenticates a client-side user with Google and gets their Google user information.
  * @param {string} code - One time google access code.
  * @param {string} redirectURI - Google redirect URI.
  */
@@ -134,4 +142,25 @@ function checkForNewUser(userInfo, callback) {
         }
     });
 }
+
+function getAuthClient(callback){
+    
+    var authClient = new google.auth.JWT(
+        serviceAccount.email,
+        path.resolve('./', serviceAccount.keyFile),
+        null,
+        serviceScopes,
+        appAccountEmail
+    );
+    
+    authClient.authorize(function(err, result) {
+        if (err) {
+            return callback(err);
+        }
+        return callback(null, authClient);
+    });
+}
+
+//
+exports.getAuthClient = getAuthClient;
 exports.authenticateGoogle = authenticateGoogle;
