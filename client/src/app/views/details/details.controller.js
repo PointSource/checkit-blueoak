@@ -189,8 +189,6 @@
          * @private
          */
         vm.scanSuccess = function(scanObj) {
-            console.log('vm.scanSuccess running');
-            console.log(scanObj);
             vm.switchView('infoView');
             ModalService.get('enterIdModalDetails').close();
 
@@ -321,16 +319,15 @@
                 button.class = 'checkout';
                 return button;
             } else if (activeReservation) {
-            	if (vm.isAdmin){
-                	button.class = 'checkin';
-            	} else { //User is not admin
-            		button.unavailable = true;
-                    console.log(vm.deviceData['active_reservations'][0]);
-                	button.class = 'checkin';
+                if (vm.isAdmin){
+                    button.class = 'checkin';
+                } else { //User is not admin
+                    button.unavailable = true;
+                    button.class = 'checkin';
                     if(vm.deviceData['active_reservations'][0].borrower.name.first === 'You'){
-            		    button.unavailable = false;
+                        button.unavailable = false;
                     }
-            	}
+                }
                 return button;
             } else {
                 return {
@@ -392,7 +389,7 @@
 
         /**
          * Function to format the borrower part of the info page view
-    	 * @param state -- the current state of the asset
+         * @param state -- the current state of the asset
          * @param activeReservation -- the asset's active reservation
          * @private
          */

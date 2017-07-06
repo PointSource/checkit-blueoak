@@ -104,7 +104,7 @@
                         });
                 } else {
                     _this.auth.signIn().then(
-                        function(data) {
+                        function() {
                             q.resolve(buildObject(gapi.auth2.getAuthInstance().currentUser.get()));
                         },
                         function(err) {
