@@ -5,8 +5,9 @@ items:
         email: {description: the Google email associated with this user, type: string}
         name:
             properties:
-              first: {description: the user's first name from Google, type: string}
-              last: {description: the user's last name from Google, type: string}
+              givenName: {description: the user's first name from Google, type: string}
+              familyName: {description: the user's last name from Google, type: string}
+              fullName: {description: the user's first and last name from Google, type: string}
             type: object
       type: object
   type: object
