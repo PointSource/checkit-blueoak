@@ -1,0 +1,71 @@
+.validation-container {
+    overflow: hidden;
+    height: 52px !important;
+    position: relative;
+    
+    /* Placeholder text color */
+    ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+        color: $checkit-background-menu;
+    }
+    ::-moz-placeholder { /* Firefox 19+ */
+        color: $checkit-background-menu;
+    }
+    :-ms-input-placeholder { /* IE 10+ */
+        color: $checkit-background-menu;
+    }
+    :-moz-placeholder { /* Firefox 18- */
+        color: $checkit-background-menu;
+    }
+
+    input {
+        position: absolute;
+        height: 50px;
+        margin: 0;
+        font-size: 18px;
+        line-height: 34px;
+        z-index: 3;
+        color: black;
+        background-color: $checkit-signin-signout;
+        border: none;
+        border-radius: 5px;
+        width: calc(100% - 100px);
+        padding: 10px;
+    }
+    input::-moz-placeholder {
+        padding-left:10px;
+    }
+
+    .row {
+        position: absolute;
+        margin: 0;
+        height: 50px;
+        z-index: 0;
+        width: 100%;
+
+        .id-input {
+            order: 1;
+            flex: 1 0 auto;
+            border: none;
+            border-top-left-radius: 5px;
+            border-bottom-left-radius: 5px;
+            background-color: $checkit-signin-signout;
+            height: 50px;
+        }
+
+        .id-submit {
+            order: 2;
+            flex: 0 0 auto;
+            color: $checkit-white;
+            background-color: $checkit-green;
+            border-left: 1px solid $checkit-background-base;
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+            font-size: 18px;
+            line-height: 50px;
+            text-align: center;
+            height: 50px;
+            width: 100px;
+            padding: 0 10px;
+        }
+    }
+}

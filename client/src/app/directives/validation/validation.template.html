@@ -1,0 +1,16 @@
+<!--
+	Copyright (c) 2015-2016 PointSource, LLC.
+	MIT Licensed
+
+    Validation View
+ -->
+
+<div class="validation-container" ng-switch-when="validationView">
+    <input placeholder="Enter ID" ng-model="inputValue" />
+    <div class="row">
+        <div class="id-input"></div>
+        <div class="id-submit" ng-click="vm.scanSuccess({cancelled: false, text: inputValue})">
+            Submit
+        </div>
+    </div>
+</div>
