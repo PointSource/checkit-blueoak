@@ -90,7 +90,7 @@
              * @returns ObjectId.
              */
             getUserId: function() {
-                return angular.fromJson(sessionStorage.getItem('userData')).userId
+                return angular.fromJson(sessionStorage.getItem('userData')).userId;
             },
             /**
              * Sets the ObjectId associated with the current user.

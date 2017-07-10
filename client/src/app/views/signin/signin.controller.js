@@ -17,7 +17,9 @@
         '$log',
         'UtilService',
         'AuthService',
-        'ModalService'
+        'ModalService',
+        'UserService',
+        'GoogleUserService'
     ];
 
     /**
@@ -29,7 +31,9 @@
      * @param ModalService
      * @constructor
      */
-    function SigninController($rootScope, $log, UtilService, AuthService, ModalService) {
+    function SigninController($rootScope, $log, UtilService, AuthService, ModalService, UserService, 
+        GoogleUserService) {
+
         var vm = this;
 
         ModalService.add('errorModal');
@@ -56,7 +60,17 @@
          * Callback function that navigates to the home page when the authentication flow succeeds.
          */
         function authSuccess() {
-            $rootScope.navigate('home');
+            if (UserService.getUserRole() === 1) { //If the user is an admin, pull in employee info
+                GoogleUserService.getUserDirectory().then(function(data){
+                    GoogleUserService.setUserDirectoryData(data);
+                    $rootScope.navigate('home');
+                },function(err){
+                    UtilService.logError('signin', 'SigninController', 'Google Users error: ' + err);
+                    $rootScope.navigate('home');
+                });
+            } else {
+                $rootScope.navigate('home');
+            }
         }
 
         /**

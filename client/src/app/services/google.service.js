@@ -42,7 +42,6 @@
              */
             getUserDirectory: function() {
                 var defer,
-                    err,
                     request;
 
                 defer = $q.defer();
@@ -57,6 +56,7 @@
                     .success(function(data) {
                         //GET is successful
                         UtilService.logInfo('services', 'GoogleUserService', 'getUserDirectory successful');
+
                         defer.resolve(data);
                     })
                     .error(function(data, status) {
@@ -65,6 +65,20 @@
                         defer.reject(data);
                     });
                 return defer.promise;
+            },
+            /**
+             * [setUserDirectoryData description]
+             * @param {[type]} data [description]
+             */
+            setUserDirectoryData: function(data) {
+                sessionStorage.setItem('userDirectory', angular.toJson(data.users));
+            },
+            /**
+             * [getUserDirectoryData description]
+             * @return {[type]}      [description]
+             */
+            getUserDirectoryData: function() {
+                return angular.fromJson(sessionStorage.getItem('userDirectory'));
             }
         };
     }
