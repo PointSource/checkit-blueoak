@@ -18,7 +18,7 @@
     function errorDirective() {
         return {
             restrict: 'A',
-            templateUrl: 'app/directives/error.template.html'
+            templateUrl: 'app/directives/error/error.template.html'
         };
     }
 })();

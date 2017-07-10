@@ -20,7 +20,7 @@
     function loadingDirective() {
         return {
             restrict: 'A',
-            templateUrl: 'app/directives/loading.template.html'
+            templateUrl: 'app/directives/loading/loading.template.html'
         };
     }
 })();
