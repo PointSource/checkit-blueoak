@@ -41,9 +41,10 @@
                 }
 
                 .image-title {
+                    padding-bottom: 5px;
                 	@include relative-center;
                     width: 103px;
-                    height: 29px;
+                    height: 35px;
                 }
             }
 

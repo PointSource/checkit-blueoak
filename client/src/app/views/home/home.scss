@@ -8,7 +8,14 @@
 .home-body {
 
 	padding: 0;
-	@include scrollable-parent(85px, 0, 0, 0);
+
+	&.scan-button-padding {
+		@include scrollable-parent(85px, 0, 0, 0);
+	}
+
+	&.no-scan-button-padding {
+		@include scrollable-parent(0, 0, 0, 0);
+	}
 
 	.scan-button-container {
 		width: 100%;
