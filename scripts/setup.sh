@@ -23,12 +23,31 @@ read -p 'Enter the app account email > ' APP_ACCOUNT_EMAIL
 echo
 
 echo 'Adding company domains restricts users who can access CheckIT'
-echo 'Company domains should be added in one of the following formats:'
-echo 'No restriction: \"companyDomains\":\ \[\]'
-echo 'Single domain: \"companyDomains\":\ \[\"example.com\"\]'
-echo 'Multiple domains: \"companyDomains\":\ \[\"example.com\",\ \"oldexample.com\"\]'
-echo
-read -p 'Enter the company domains > ' COMPANY_DOMAINS
+echo 'To add no company domains, simply press enter.'
+echo 'To add a domain, enter the domain (ex: example.com).'
+echo 'To add multiple domains, separate each domain entered by a space (ex: example.com oldexample.com).'
+read -p 'Enter the company domains > ' companyDomains
+
+IFS=' ' read -r -a companyDomainsArr <<< "$companyDomains"
+
+COMPANY_DOMAINS='\"companyDomains\":\ \['
+
+isFirstEntry="true"
+
+for element in "${companyDomainsArr[@]}"
+do
+    if [ $isFirstEntry = "true" ]
+    then
+        isFirstEntry="false"
+        COMPANY_DOMAINS=$COMPANY_DOMAINS"\\\"$element\\\""
+    else
+        COMPANY_DOMAINS=$COMPANY_DOMAINS",\\ \\\"$element\\\""
+    fi
+done
+
+COMPANY_DOMAINS=$COMPANY_DOMAINS'\]'
+
+echo $COMPANY_DOMAINS
 
 echo
 echo 'Injecting private information into the following files'
