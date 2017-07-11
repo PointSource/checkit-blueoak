@@ -7,16 +7,13 @@ Scripts used to set up and build CheckIT are included within the scripts directo
 installs bower and npm dependencies.
 * `inject-private-info.sh` - Injects private information into the `client/src/app.config.json` and 
 `server/config/default.json` files.
-* `setup.sh` - Installs all dependencies, prompts user for credentials needed for CheckIT, and injects private info.
+* `setup.sh` - Installs all dependencies, prompts user for credentials needed for CheckIT, and injects private inforomation.
+
+***Note:*** If you are running the setup.sh script on macOS, you must install `gsed` using homebrew for the `sed` command to function properly. If you are running the setup.sh script on linux, you do not need to install any additional programs. `gsed` can be installed with homebrew using the following command: `brew install gnu-sed --with-default-names`.
 
 ## Jenkins Deployment
 
-The jenkins directory contains scripts used to build CheckIT on a Jenkins server. In order to build CheckIT on a 
-Jenkins server, first create a project on a Jenkins server and configure the build to use the 
-`https://github.com/PointSource/checkit-blueoak.git` repository (or your own forked repository) in the "Source Control 
-Management" section. To configure the build, click "Add build step" followed by "Execute shell". Then add the code 
-below to the execute shell text box. Add the necessary credentials and save the build configuration. CheckIT is now 
-ready to be built.
+The jenkins directory contains scripts used to build CheckIT on a Jenkins server. In order to build CheckIT on a Jenkins server, first create a project on a Jenkins server and configure the build to use the `https://github.com/PointSource/checkit-blueoak.git` repository (or your own forked repository) in the "Source Control Management" section. To configure the build, click "Add build step" followed by "Execute shell". Then add the code below to the execute shell text box. Add the necessary credentials and save the build configuration. CheckIT is now ready to be built.
 
 ```
 # This script is meant to be a template to copy into an "Execute shell" on Jenkins
