@@ -47,8 +47,6 @@ done
 
 COMPANY_DOMAINS=$COMPANY_DOMAINS'\]'
 
-echo $COMPANY_DOMAINS
-
 echo
 echo 'Injecting private information into the following files'
 echo '  - client/src/app.config.json'
