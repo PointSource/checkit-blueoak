@@ -12,8 +12,8 @@
     .details-body {
         @include scrollable-parent(0, 0, (23% / 100%) * 100vh, 0);
         overflow-x: hidden;
+
         .details-content {
-            overflow: auto;
             min-height: 310px;
             .device-info {
                 padding: 0 15px;
@@ -31,11 +31,24 @@
                 order: 3;
                 justify-content: center;
                 align-items: center;
+                position: relative;
+                z-index: 4;
 
                 .instruction {
                     color: $checkit-subcolor;
                     text-align: right;
                     font-size: 16px;
+                }
+                input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+                    color: $checkit-background-base;
+                }
+
+                input::-moz-placeholder {
+                    color: $checkit-background-base;
+                }
+
+                input:-ms-input-placeholder {  
+                    color: $checkit-background-base;
                 }
 
                 .datepicker {
@@ -47,14 +60,11 @@
                         font-size: 28px;
                     }
 
-
                     .input-block {
                         border: 1px solid $checkit-background-base;
                         border-radius: 5px;
-                        overflow: hidden;
                         height: 52px;
                         position: relative;
-
 
                         #htmldatepicker {
                             position: absolute;
@@ -135,22 +145,10 @@
                         }
                     }
 
-                    .fade{
-                        transition: 0.15s linear all;
-                        opacity: 1;
-
-                        &.ng-hide {
-                            opacity: 0;
-                            position: absolute;
-
-                        }
-                    }
-
                     .input-block {
 
                         border: 1px solid $checkit-background-base;
                         border-radius: 5px;
-                        overflow: hidden;
                         height: 52px;
                         position: relative;
 
@@ -161,15 +159,12 @@
                             font-size: 18px;
                             line-height: 34px;
                             z-index: 3;
-                            color: black;
+                            color: $checkit-background-base;
                             background-color: $checkit-signin-signout;
                             border: none;
                             border-radius: 5px;
-                            width: calc(100% - 50px);
+                            width: 100%;
                             padding: 10px;
-                        }
-                        input::-moz-placeholder {
-                            padding-left:10px;
                         }
 
                         .row {
@@ -187,6 +182,34 @@
                                 border-bottom-left-radius: 5px;
                                 background-color: $checkit-signin-signout;
                                 height: 50px;
+
+                                .angucomplete-dropdown {
+                                    overflow-y: auto;
+                                    top: 52px;
+                                    width: 100%;
+                                    max-height: 140px; // your preference
+                                    background-color: $checkit-signin-signout;
+                                    border: none;
+                                    //Truncate text
+                                    white-space: nowrap;
+                                    overflow-x: hidden;
+                                    text-overflow: ellipsis;
+                                    
+                                    border-bottom-left-radius: 5px;
+                                    border-bottom-right-radius: 5px;
+                                    .angucomplete-row {
+                                        color: $checkit-background-base;
+                                    }
+                                    .angucomplete-searching {
+                                        color: $checkit-background-base;
+                                    }
+                                    .angucomplete-description {
+                                        overflow-x: hidden;
+                                        height: 15px;
+                                        white-space: nowrap;
+                                        text-overflow: ellipsis;
+                                    }
+                                }
                             }
 
                             .email-image {

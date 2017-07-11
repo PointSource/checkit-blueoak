@@ -20,6 +20,7 @@
         'AssetService',
         'UserService',
         'ValidationService',
+        'GoogleUserService',
         '$cordovaBarcodeScanner',
         '$document',
         '$timeout',
@@ -55,9 +56,11 @@
         AssetService,
         UserService,
         ValidationService,
+        GoogleUserService,
         $cordovaBarcodeScanner,
         $document,
         $timeout,
+
         ModalService,
         moment) {
         var vm = this;
@@ -71,7 +74,6 @@
         vm.datepicker.returnDate = new Date();
         vm.isCheckoutFor = false;
         vm.checkoutFor = {};
-        vm.checkoutFor.email = null;
         vm.deleteDevice = {};
         vm.deleteDevice.fn = function() {};
 
@@ -90,6 +92,9 @@
         vm.getData = function() {
             vm.loadingState = ''; //Used when making api calls
             vm.pageState = 'infoView'; //Used fto switch between various views on the page
+            if (UserService.getUserRole() === 1) {
+                vm.userDirectory = GoogleUserService.getUserDirectoryData();
+            }
             AssetService.getAssets(null, assetId).then(_updateDeviceData, _detailsFail);
         }; //call automatically on load
         vm.getData();
@@ -221,7 +226,7 @@
                 UtilService.logInfo('details', 'detailsContainer', 'Calling AssetService.checkoutAsset');
                 //Hide buttons until operation done
                 vm.loadingState = '';
-                AssetService.checkoutAsset(vm.deviceData.id, vm.datepicker.returnDate, vm.checkoutFor.email)
+                AssetService.checkoutAsset(vm.deviceData.id, vm.datepicker.returnDate, vm.checkoutFor.description)
                     .then(_checkOutSuccess, _checkOutFail);
             } else {
                 var date = moment(vm.datepicker.returnDate);
@@ -237,13 +242,29 @@
                     vm.loadingState = '';
                     AssetService.checkoutAsset(vm.deviceData.id,
                             vm.datepicker.returnDate,
-                            vm.checkoutFor.email)
+                            vm.checkoutFor.description)
                         .then(_checkOutSuccess, _checkOutFail);
                 } else {
                     ModalService.get('dateWarning').open();
                 }
             }
 
+        };
+
+        /**
+         * 
+         */
+        vm.searchUsers = function(str) {
+            var matches = [];
+            vm.userDirectory.forEach(function(user){
+                if ((user.name.fullName.toLowerCase().indexOf(str.toString().toLowerCase()) >= 0) ||
+                    (user.name.familyName.toLowerCase().indexOf(str.toString().toLowerCase()) >= 0) ||
+                    (user.name.givenName.toLowerCase().indexOf(str.toString().toLowerCase()) >= 0) ||
+                    (user.primaryEmail.toLowerCase().indexOf(str.toString().toLowerCase()) >= 0)) {
+                        matches.push(user);
+                }
+            });
+            return matches;
         };
 
         /**

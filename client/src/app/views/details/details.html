@@ -49,14 +49,21 @@
                                 <!-- Admin only -->
                                 <div class="inputEmail" ng-if="vm.isAdmin">
                                     <!-- <span class="instruction">Checkout for someone else?</span><input type="checkbox" ng-model="isCheckoutFor"></input> -->
-                                    <div ng-show="!vm.isCheckoutFor" class="fade for-someone-button">
+                                    <div ng-show="!vm.isCheckoutFor" class="for-someone-button">
                                         <button class="checkit-button" ng-click="vm.isCheckoutFor = true">Checkout for someone else?</button>
                                     </div>
-                                    <div ng-show="vm.isCheckoutFor" class="input-block fade">
-                                        <!-- <div class="title">checkout for:</div> -->
-                                        <input placeholder="Their Pointsource Email" ng-model="vm.checkoutFor.email" />
+                                    <div ng-show="vm.isCheckoutFor" class="input-block">
+                                        <!-- <div class="title">checkout for:</div> --> 
                                         <div class="row">
-                                            <div class="email-input"></div>
+                                            <angucomplete-alt class="email-input"
+                                                    placeholder="Search employees"
+                                                    pause="100"
+                                                    selected-object="vm.checkoutFor"
+                                                    local-data="vm.userDirectory"
+                                                    local-search="vm.searchUsers"
+                                                    title-field="name.fullName"
+                                                    description-field="primaryEmail"
+                                                    minlength="1"/>
                                             <div class="email-image" ng-click="vm.isCheckoutFor = false; vm.checkoutFor.email = null">
                                                 <i class="fa fa-remove"></i>
                                             </div>
