@@ -178,7 +178,6 @@
                 message: 'Failed to checkin asset.'
             };
             $rootScope.errorModalText(err);
-            vm.switchView('validationView');
             vm.loadingState = 'contentSuccess';
         }
 
