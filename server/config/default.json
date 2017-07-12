@@ -58,7 +58,6 @@
         "username": "SET_MONGODB_USERNAME_HERE", //Database username
         "pwd": "SET_MONGODB_PASSWORD_HERE" //database encrypted password
     },
-
     "google": {
         "domain": "SET_DOMAIN_HERE",
         "serviceAccount": {
