@@ -240,10 +240,24 @@
                     UtilService.logInfo('details', 'detailsContainer', 'Calling AssetService.checkoutAsset');
                     //Hide buttons until operation done
                     vm.loadingState = '';
-                    AssetService.checkoutAsset(vm.deviceData.id,
+                    if (vm.isAdmin) {
+                        var userInfo = {
+                            email : vm.checkoutFor.description,
+                            name : {
+                                first : vm.checkoutFor.originalObject.name.givenName,
+                                last : vm.checkoutFor.originalObject.name.familyName
+                            }
+                        };
+                        AssetService.checkoutAssetForUser(vm.deviceData.id,
                             vm.datepicker.returnDate,
-                            vm.checkoutFor.description)
+                            userInfo)
                         .then(_checkOutSuccess, _checkOutFail);
+                    } else {
+                        AssetService.checkoutAsset(vm.deviceData.id,
+                            vm.datepicker.returnDate)
+                        .then(_checkOutSuccess, _checkOutFail);
+                    }
+                    
                 } else {
                     ModalService.get('dateWarning').open();
                 }

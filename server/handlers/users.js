@@ -5,12 +5,13 @@
 
 'use strict';
 var auth = require('../util/authUtil.js');
-var _app, _logger, _usersService;
+var _app, _logger, _usersService, _googleapisService;
 module.exports = {
-    init: function(app, logger, usersService){
+    init: function(app, logger, usersService, googleapisService){
         _app = app;
         _logger = logger;
         _usersService = usersService;
+        _googleapisService = googleapisService;
     },
     getUserReservations: function(req, res, next){
         _logger.info('GETing from /api/v1/users/reservations using', req.session.email);
@@ -26,7 +27,7 @@ module.exports = {
     },
     getGoogleUsers: function(req, res, next) {
         _logger.info('GETing from /api/v1/admin/users/googleDirectory');
-        _usersService.adminServices.getGoogleUsers(function(err, result) {
+        _googleapisService.adminServices.getGoogleUsers(function(err, result) {
             if (err) {
                 _logger.error(err);
                 next(err);

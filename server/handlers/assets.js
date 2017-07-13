@@ -64,8 +64,8 @@ module.exports = {
         });
     },
     checkoutAssetForUser: function(req, res, next) {
-        _logger.info('POSTing to /api/v1/admin/assets/checkout for ', req.body.checkoutEmail);
-        _assetsService.adminServices.checkoutAssetWithEmail(req.body, req.session.email, function(err, result) {
+        _logger.info('POSTing to /api/v1/admin/assets/checkout for ', req.body.userInfo.email);
+        _assetsService.adminServices.checkoutAssetForUser(req.body, req.session.email, function(err, result) {
             if (err) {
                 if (err.status === 202) {
                     res.status(err.status).send(result);
