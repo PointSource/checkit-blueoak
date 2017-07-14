@@ -222,12 +222,32 @@
          *
          */
         vm.checkOutDevice = function() {
-            if (vm.deviceData.categories.type === 'laptop') { //allow indefinite checkouts to laptops
-                UtilService.logInfo('details', 'detailsContainer', 'Calling AssetService.checkoutAsset');
+            var userInfo;
+            var checkOut = function() {
                 //Hide buttons until operation done
                 vm.loadingState = '';
-                AssetService.checkoutAsset(vm.deviceData.id, vm.datepicker.returnDate, vm.checkoutFor.description)
-                    .then(_checkOutSuccess, _checkOutFail);
+                if (vm.isCheckoutFor) {
+                    userInfo = {
+                        email: vm.checkoutFor.description,
+                        name: {
+                            first: vm.checkoutFor.originalObject.name.givenName,
+                            last: vm.checkoutFor.originalObject.name.familyName
+                        }
+                    };
+                    AssetService.checkoutAssetForUser(vm.deviceData.id,
+                            vm.datepicker.returnDate,
+                            userInfo)
+                        .then(_checkOutSuccess, _checkOutFail);
+                } else {
+                    AssetService.checkoutAsset(vm.deviceData.id,
+                            vm.datepicker.returnDate)
+                        .then(_checkOutSuccess, _checkOutFail);
+                }
+            };
+
+            if (vm.deviceData.categories.type === 'laptop') { //allow indefinite checkouts to laptops
+                UtilService.logInfo('details', 'detailsContainer', 'Calling AssetService.checkoutAsset');
+                checkOut();
             } else {
                 var date = moment(vm.datepicker.returnDate);
                 //get the current moment then set it to the same time as the return date.
@@ -238,44 +258,26 @@
                 var future = now.clone().add(3, 'weeks');
                 if ((date.isBefore(future) && date.isAfter(now)) || date.isSame(future) || date.isSame(now)) {
                     UtilService.logInfo('details', 'detailsContainer', 'Calling AssetService.checkoutAsset');
-                    //Hide buttons until operation done
-                    vm.loadingState = '';
-                    if (vm.isAdmin) {
-                        var userInfo = {
-                            email : vm.checkoutFor.description,
-                            name : {
-                                first : vm.checkoutFor.originalObject.name.givenName,
-                                last : vm.checkoutFor.originalObject.name.familyName
-                            }
-                        };
-                        AssetService.checkoutAssetForUser(vm.deviceData.id,
-                            vm.datepicker.returnDate,
-                            userInfo)
-                        .then(_checkOutSuccess, _checkOutFail);
-                    } else {
-                        AssetService.checkoutAsset(vm.deviceData.id,
-                            vm.datepicker.returnDate)
-                        .then(_checkOutSuccess, _checkOutFail);
-                    }
-                    
+                    checkOut();
                 } else {
                     ModalService.get('dateWarning').open();
                 }
             }
-
         };
 
         /**
-         * 
+         * Search function for the employee dropdown
+         * @param  {String} str The string to match to
+         * @return {Array}     An array of entries that matche the search query
          */
         vm.searchUsers = function(str) {
             var matches = [];
-            vm.userDirectory.forEach(function(user){
+            vm.userDirectory.forEach(function(user) {
                 if ((user.name.fullName.toLowerCase().indexOf(str.toString().toLowerCase()) >= 0) ||
                     (user.name.familyName.toLowerCase().indexOf(str.toString().toLowerCase()) >= 0) ||
                     (user.name.givenName.toLowerCase().indexOf(str.toString().toLowerCase()) >= 0) ||
                     (user.primaryEmail.toLowerCase().indexOf(str.toString().toLowerCase()) >= 0)) {
-                        matches.push(user);
+                    matches.push(user);
                 }
             });
             return matches;
@@ -348,12 +350,12 @@
                 button.class = 'checkout';
                 return button;
             } else if (activeReservation) {
-                if (vm.isAdmin){
+                if (vm.isAdmin) {
                     button.class = 'checkin';
                 } else { //User is not admin
                     button.unavailable = true;
                     button.class = 'checkin';
-                    if(vm.deviceData['active_reservations'][0].borrower.name.first === 'You'){
+                    if (vm.deviceData['active_reservations'][0].borrower.name.first === 'You') {
                         button.unavailable = false;
                     }
                 }
@@ -366,7 +368,7 @@
             }
         }
 
-         /**
+        /**
          * Formats the details to match checkIT standards so that the data can be displayed by Angular
          * @param data -- the asset's data as returned by the server
          * @private
@@ -399,7 +401,7 @@
             }];
         }
 
-         /**
+        /**
          * Function to format the status part of the info page view
          * @param state -- the current state of the asset
          * @private
