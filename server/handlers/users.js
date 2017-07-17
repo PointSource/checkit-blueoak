@@ -35,5 +35,16 @@ module.exports = {
                 res.status(200).send(result);
             }
         });
+    },
+    getUsers: function(req, res, next) {
+        _logger.info('GETing from /api/v1/admin/users');
+        _usersService.adminServices.getAllUsers(req.query, function(err, result) {
+            if (err) {
+                _logger.error(err);
+                next(err);
+            } else {
+                res.status(200).send(result);
+            }
+        });
     }
 };

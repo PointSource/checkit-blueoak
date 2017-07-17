@@ -20,6 +20,7 @@ paths:
   /auth/logout: {$ref: v1-api/paths/auth.logout.yaml}
   /records/{assetID}: {$ref: v1-api/paths/records.assetID.yaml}
   /users/me/reservations: {$ref: v1-api/paths/users.me.reservations.yaml}
+  /admin/users: {$ref: v1-api/paths/admin.users.yaml}
   /admin/users/googleDirectory: {$ref: v1-api/paths/admin.users.googleDirectory.yaml}
   
 produces: [application/json]

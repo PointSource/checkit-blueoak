@@ -62,15 +62,51 @@
         function authSuccess() {
             if (UserService.getUserRole() === 1) { //If the user is an admin, pull in employee info
                 GoogleUserService.getUserDirectory().then(function(data){
+                    
                     GoogleUserService.setUserDirectoryData(data);
+
                     $rootScope.navigate('home');
-                },function(err){
-                    UtilService.logError('signin', 'SigninController', 'Google Users error: ' + err);
-                    $rootScope.navigate('home');
+                },function(err){ //If the Google Directory call fails, fallback to the CheckIT database
+                    UserService.getUsers().then(function(data){
+                        UtilService.logError('signin', 'SigninController', 'Error using Google Direcotry API: ' + 
+                            err + 'Defaulting to CheckIT database...');
+                        var remappedData = _remapCheckITUserData(data);
+                        GoogleUserService.setUserDirectoryData(remappedData);
+                    }, function(err){
+                        UtilService.logError('signin', 'SigninController', 'Google Users error: ' + err);
+                        $rootScope.navigate('home');
+                    });
                 });
             } else {
                 $rootScope.navigate('home');
             }
+        }
+
+        /**
+         * Remaps the CheckIT user database to match the Google Directory schema.
+         * Email becomes primaryEmail, name.last becomes name.familyName,
+         * name.first becomes name.givenName, and a fullName field is added to name.
+         * @param  {object} json The user data
+         * @return {object} the remapped data  
+         */
+        function _remapCheckITUserData(json){
+            var users = [];
+            json.forEach(function(user) {
+                //Add fullName field
+                user.name.fullName = user.name.first + ' ' + user.name.last;
+                //Edit other field names
+                user.primaryEmail = user.email;
+                delete user.email;
+                user.name.familyName = user.name.last;
+                delete user.name.last;
+                user.name.givenName = user.name.first;
+                delete user.name.first;
+                users.push(user);
+            });
+            var data = {
+                users: users
+            };
+            return data;
         }
 
         /**

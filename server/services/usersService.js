@@ -14,6 +14,8 @@ var _logger, domain;
 
 var google = require('googleapis');
 
+var adminServices = {};
+
 exports.init = function(logger, config, callback) {
     _logger = logger;
 
@@ -27,7 +29,7 @@ exports.init = function(logger, config, callback) {
  * @param query the criteria that the users will be searched for
  * @param callback
  */
-function getAllUsers(query, callback) {
+adminServices.getAllUsers = function(query, callback) {
 
     var sortOrder = ''; // ascending
     var sortBy = 'email';
@@ -35,14 +37,14 @@ function getAllUsers(query, callback) {
         sortBy = query.sortBy;
     }
 
-    User.find({}).sort(sortOrder + sortBy).exec(function(err, users) {
+    User.find({}, JSON.parse(query.filter)).sort(sortOrder + sortBy).exec(function(err, users) {
         if (err) {
             return callback(new errors.DefaultError(400, 'Error while getting list of users.'));
         } else {
             return callback(null, users);
         }
     });
-}
+};
 
 var _objectUnique = function(a) {
     return a.reduce(function(object, item) {
@@ -298,8 +300,8 @@ function checkForNewUser(userInfo, callback) {
     });
 }
 
+exports.adminServices = adminServices;
 
-exports.getAllUsers = getAllUsers;
 exports.getUserReservations = getUserReservations;
 exports.getUserName = getUserName;
 exports.userExists = userExists;

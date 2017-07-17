@@ -225,18 +225,28 @@
             var checkOut = function() {
                 //Hide buttons until operation done
                 vm.loadingState = '';
-                if (vm.isCheckoutFor) {
-                    userInfo = {
-                        email: vm.checkoutFor.description,
-                        name: {
-                            first: vm.checkoutFor.originalObject.name.givenName,
-                            last: vm.checkoutFor.originalObject.name.familyName
-                        }
-                    };
-                    AssetService.checkoutAssetForUser(vm.deviceData.id,
+                if (vm.isCheckoutFor) { //If in the checkout for someone else state
+                    
+                    if (vm.checkoutFor.originalObject) { //If the user is defined
+                        userInfo = {
+                            email: vm.checkoutFor.description,
+                            name: {
+                                first: vm.checkoutFor.originalObject.name.givenName,
+                                last: vm.checkoutFor.originalObject.name.familyName
+                            }
+                        };
+                        AssetService.checkoutAssetForUser(vm.deviceData.id,
                             vm.datepicker.returnDate,
                             userInfo)
                         .then(_checkOutSuccess, _checkOutFail);
+                    } else {
+                        var modalError = {
+                            message: 'Invalid employee name!'
+                        };
+                        $rootScope.errorModalText(modalError);
+                        ModalService.get('errorModal').open();
+                        vm.loadingState = 'contentSuccess';
+                    }
                 } else {
                     AssetService.checkoutAsset(vm.deviceData.id,
                             vm.datepicker.returnDate)

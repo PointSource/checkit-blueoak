@@ -1,20 +1,20 @@
 get:
-  description: 'Returns an array of Google users associated with the Google account domain
+  description: 'Returns an array of all users within the CheckIT database
 
     '
-  operationId: getGoogleUsers
+  operationId: getUsers
   produces: [application/json]
   responses:
     '200':
-      description: returns an array of the Google user's associated with this account
+      description: returns an array of all users within the CheckIT database
       schema: {$ref: '../definitions/GoogleUsers.yaml'}
     '401':
-      description: attempted to get list of Google user's before authorization
+      description: attempted to get list of CheckIT user's before authorization
       schema: {$ref: '../definitions/AuthorizationError.yaml'}
     default:
       description: unexpected error
       schema: {$ref: '../definitions/DefaultError.yaml'}
-  summary: Google Users
+  summary: CheckIT users
   tags: [Users]
   x-middleware: [auth.authenticateHandler]
 x-handler: users
