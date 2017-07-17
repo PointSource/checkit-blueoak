@@ -296,12 +296,10 @@
                 return defer.promise;
             },
 
-
             /**
              * Checks out asset associated with the assetID until the specified return date.
              * @param assetID -> id of the asset involved
              * @param returnDate -> date chosen to return the asset by
-             * @param user -> (optional) object of the user
              * @returns {*} -> Promise object whose data is the udpated asset details
              */
             checkoutAsset: function(assetID, returnDate) {
@@ -372,6 +370,15 @@
                 return defer.promise;
             },
 
+            /**
+             * Checks out asset for a specific user associated with the assetID until the 
+             * specified return date.
+             * @param  {string} assetID    The unique ID for the asset
+             * @param  {date} returnDate   The date the asset needs to be checked back in
+             * @param  {Object} userInfo   Object that includes the user's first and last 
+             *                             name and their primary email.
+             * @return {*}                 Promise object whose data is the udpated asset details
+             */
             checkoutAssetForUser: function(assetID, returnDate, userInfo) {
                 var defer = $q.defer(); //initialize promise defer
                 var err = 'Error checking out asset ' + assetID + ': '; //error message on unsuccessful

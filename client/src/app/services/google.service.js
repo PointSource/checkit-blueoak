@@ -66,16 +66,18 @@
                     });
                 return defer.promise;
             },
+
             /**
-             * [setUserDirectoryData description]
-             * @param {[type]} data [description]
+             * Saves the Google Directory data to session storage
+             * @param {Object} data The Google Directory data to save
              */
             setUserDirectoryData: function(data) {
                 sessionStorage.setItem('userDirectory', angular.toJson(data.users));
             },
+
             /**
-             * [getUserDirectoryData description]
-             * @return {[type]}      [description]
+             * Retrieves the Google Directory data from sessions storage
+             * @return {Object}      The Google Directory data
              */
             getUserDirectoryData: function() {
                 return angular.fromJson(sessionStorage.getItem('userDirectory'));

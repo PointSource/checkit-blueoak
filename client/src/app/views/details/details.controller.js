@@ -60,7 +60,6 @@
         $cordovaBarcodeScanner,
         $document,
         $timeout,
-
         ModalService,
         moment) {
         var vm = this;
