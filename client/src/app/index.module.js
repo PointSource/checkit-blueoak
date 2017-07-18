@@ -19,6 +19,7 @@
             'ngFitText',
             'app.filters',
             'ngFileUpload',
-            'smoothScroll'
+            'smoothScroll',
+            'angucomplete-alt'
         ]);
 })();

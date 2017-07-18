@@ -295,21 +295,21 @@
 
                 return defer.promise;
             },
+
             /**
              * Checks out asset associated with the assetID until the specified return date.
              * @param assetID -> id of the asset involved
              * @param returnDate -> date chosen to return the asset by
              * @returns {*} -> Promise object whose data is the udpated asset details
              */
-            checkoutAsset: function(assetID, returnDate, checkoutEmail) {
+            checkoutAsset: function(assetID, returnDate) {
                 var defer = $q.defer(); //initialize promise defer
-                var err = 'Error checking out asset ' + assetID + ': '; //error message on unsuccessful
 
                 //set the pickup date now so it is consistent when we use it later
 
                 var request = {
                     method: 'POST',
-                    //url: appConfig.apiHost + 'api/v1/assets/checkin',
+                    url: appConfig.apiHost + 'api/v1/assets/checkout',
                     withCredentials: true,
                     headers: {
                         'Content-Type': 'application/json'
@@ -326,93 +326,122 @@
                     }
                 };
 
-                if (checkoutEmail) {
-                    request.data['checkoutEmail'] = checkoutEmail;
-                    request.url = appConfig.apiHost + 'api/v1/admin/assets/checkout'; //url of admin endpoint
-                    $http(request)
-                        .success(function(data, status) {
-                            //POST successful
-                            UtilService.logInfo('services', 'AssetService', 'Checkout successful');
-                            // set borrower name and format status
-                            _modSingleAsset(data);
+                //Make request
+                $http(request)
+                    .success(function(data, status) {
+                        //POST successful
+                        UtilService.logInfo('services', 'AssetService', 'Checkout successful');
+                        // set borrower name and format status
+                        _modSingleAsset(data);
 
-                            // Set up return object
-                            var ret = {};
-                            ret.data = data;
-                            ret.status = status;
+                        // Set up return object
+                        var ret = {};
+                        ret.data = data;
+                        ret.status = status;
 
-                            if (status === 200) {
+                        if (status === 200) {
 
-                                //Successfully checked out for current user
-                                _addCalendarEvent(moment(returnDate), data.name, data.location.name).then(
-                                    function(id) {
-                                        UtilService.logInfo('services', 'AssetService',
-                                            'successfully added calendar event with id: ' + id);
-                                        $rootScope.$broadcast('ci:Update Reservations');
-                                        defer.resolve(ret);
-                                    },
-                                    function(err) {
-                                        $rootScope.$broadcast('ci:Update Reservations');
-                                        defer.reject(err);
-                                    });
-                                //Notify menu controller that it's data is stale
+                            //Successfully checked out for current user
+                            _addCalendarEvent(moment(returnDate), data.name, data.location.name).then(
+                                function(id) {
+                                    UtilService.logInfo('services', 'AssetService',
+                                        'successfully added calendar event with id: ' + id);
+                                    defer.resolve(ret);
+                                },
+                                function(err) {
+                                    defer.reject(err);
+                                });
+                            //Notify menu controller that it's data is stale
+                            $rootScope.$broadcast('ci:Update Reservations');
 
+                        } else if (status === 202) {
+                            defer.resolve(ret);
+                        }
 
-                            } else if (status === 202) {
-                                defer.resolve(ret);
-                            }
+                    })
+                    .error(function(data, status) {
+                        //POST unsuccessful
+                        UtilService.logError('services', 'AssetService', status);
 
-                        })
-                        .error(function(data, status) {
-                            //POST unsuccessful
-                            UtilService.logError('services', 'AssetService', err + status);
+                        defer.reject(data);
+                    });
 
-                            defer.reject(data);
-                        });
-                } else {
-                    request.url = appConfig.apiHost + 'api/v1/assets/checkout'; //url of endpoint
-
-                    //Make request
-                    $http(request)
-                        .success(function(data, status) {
-                            //POST successful
-                            UtilService.logInfo('services', 'AssetService', 'Checkout successful');
-                            // set borrower name and format status
-                            _modSingleAsset(data);
-
-                            // Set up return object
-                            var ret = {};
-                            ret.data = data;
-                            ret.status = status;
-
-                            if (status === 200) {
-
-                                //Successfully checked out for current user
-                                _addCalendarEvent(moment(returnDate), data.name, data.location.name).then(
-                                    function(id) {
-                                        UtilService.logInfo('services', 'AssetService',
-                                            'successfully added calendar event with id: ' + id);
-                                        defer.resolve(ret);
-                                    },
-                                    function(err) {
-                                        defer.reject(err);
-                                    });
-                                //Notify menu controller that it's data is stale
-                                $rootScope.$broadcast('ci:Update Reservations');
-
-                            } else if (status === 202) {
-                                defer.resolve(ret);
-                            }
-
-                        })
-                        .error(function(data, status) {
-                            //POST unsuccessful
-                            UtilService.logError('services', 'AssetService', status);
-
-                            defer.reject(data);
-                        });
-                }
                 //return the updated asset object
+                return defer.promise;
+            },
+
+            /**
+             * Checks out asset for a specific user associated with the assetID until the 
+             * specified return date.
+             * @param  {string} assetID    The unique ID for the asset
+             * @param  {date} returnDate   The date the asset needs to be checked back in
+             * @param  {Object} userInfo   Object that includes the user's first and last 
+             *                             name and their primary email.
+             * @return {*}                 Promise object whose data is the udpated asset details
+             */
+            checkoutAssetForUser: function(assetID, returnDate, userInfo) {
+                var defer = $q.defer(); //initialize promise defer
+                var err = 'Error checking out asset ' + assetID + ': '; //error message on unsuccessful
+
+                //set the pickup date now so it is consistent when we use it later
+
+                var request = {
+                    method: 'POST',
+                    url: appConfig.apiHost + 'api/v1/admin/assets/checkout',
+                    withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    data: {
+                        assetID: assetID,
+                        'pickup_date': moment().toISOString(),
+                        'return_date': moment(returnDate).utc()
+                            .milliseconds(999)
+                            .seconds(59)
+                            .minutes(59)
+                            .hours(23)
+                            .toISOString(),
+                        'userInfo' : userInfo
+                    }
+                };
+                $http(request)
+                    .success(function(data, status) {
+                        //POST successful
+                        UtilService.logInfo('services', 'AssetService', 'Checkout successful');
+                        // set borrower name and format status
+                        _modSingleAsset(data);
+
+                        // Set up return object
+                        var ret = {};
+                        ret.data = data;
+                        ret.status = status;
+
+                        if (status === 200) {
+
+                            //Successfully checked out for current user
+                            _addCalendarEvent(moment(returnDate), data.name, data.location.name).then(
+                                function(id) {
+                                    UtilService.logInfo('services', 'AssetService',
+                                        'successfully added calendar event with id: ' + id);
+                                    $rootScope.$broadcast('ci:Update Reservations');
+                                    defer.resolve(ret);
+                                },
+                                function(err) {
+                                    $rootScope.$broadcast('ci:Update Reservations');
+                                    defer.reject(err);
+                                });
+                        } else if (status === 202) {
+                            defer.resolve(ret);
+                        }
+
+                    })
+                    .error(function(data, status) {
+                        //POST unsuccessful
+                        UtilService.logError('services', 'AssetService', err + status);
+
+                        defer.reject(data);
+                    });
+
                 return defer.promise;
             },
             /**

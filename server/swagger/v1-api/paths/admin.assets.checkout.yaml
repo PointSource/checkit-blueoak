@@ -17,8 +17,8 @@ post:
           type: string}
         return_date: {description: the return date of this reservation in ISO format,
           type: string}
-        userEmail: {description: The email of the user to check this device out to,
-          type: string}
+        userInfo: {description: The name and email of the user to check this device out to,
+          type: object}
   produces: [application/json]
   responses:
     '200': {description: successfully checked out asset}

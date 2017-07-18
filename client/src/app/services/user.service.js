@@ -33,6 +33,48 @@
      */
     function UserService($q, $rootScope, appConfig, $http, UtilService) {
         return {
+
+            getUsers: function() {
+                var defer, //promise
+                    request; //http request object
+
+                defer = $q.defer(); //initialize promise defer
+
+                //Configure request
+                request = {
+                    method: 'GET',
+                    withCredentials: true,
+                    url: appConfig.apiHost + 'api/v1/admin/users',
+                    params: {
+                        filter: {
+                            '_id' : 0,
+                            'name' : 1,
+                            'email' : 1
+                        }
+                    }
+                };
+
+                //Make the request
+                $http(request)
+                    .success(function(data) {
+                        //GET Successful
+                        UtilService.logInfo('services', 'UserService', 'getUsers successful');
+                        //finish promise
+                        defer.resolve(data);
+                    })
+                    .error(
+                        function(data, status) {
+                            //GET unsuccessful
+                            var err = {
+                                data: data,
+                                status: status
+                            };
+                            UtilService.logError('services', 'UserService', err.data + status);
+                            defer.reject(err);
+                        });
+
+                return defer.promise;
+            },
             /**
              * Gets and returns a promise for the set of the current users active reservations.
              * @returns {*} -> Promise object whose data is the users active reservations
@@ -81,8 +123,6 @@
                             defer.reject(err);
                         });
 
-
-
                 return defer.promise;
             },
             /**
@@ -90,7 +130,7 @@
              * @returns ObjectId.
              */
             getUserId: function() {
-                return angular.fromJson(sessionStorage.getItem('userData')).userId
+                return angular.fromJson(sessionStorage.getItem('userData')).userId;
             },
             /**
              * Sets the ObjectId associated with the current user.

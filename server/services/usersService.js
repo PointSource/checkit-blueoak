@@ -10,19 +10,17 @@ var errors = require('../util/errors.js'),
     Record = mongoose.model('Record'),
     Asset = mongoose.model('Asset');
 
-var _logger, _authService, domain;
+var _logger, domain;
 
 var google = require('googleapis');
 
 var adminServices = {};
 
-exports.init = function(logger, config, authService, callback) {
+exports.init = function(logger, config, callback) {
     _logger = logger;
-    _authService = authService;
-
-    domain = config.get('google').domain;
 
     callback();
+
 };
 
 /**
@@ -31,7 +29,7 @@ exports.init = function(logger, config, authService, callback) {
  * @param query the criteria that the users will be searched for
  * @param callback
  */
-function getAllUsers(query, callback) {
+adminServices.getAllUsers = function(query, callback) {
 
     var sortOrder = ''; // ascending
     var sortBy = 'email';
@@ -39,14 +37,14 @@ function getAllUsers(query, callback) {
         sortBy = query.sortBy;
     }
 
-    User.find({}).sort(sortOrder + sortBy).exec(function(err, users) {
+    User.find({}, JSON.parse(query.filter)).sort(sortOrder + sortBy).exec(function(err, users) {
         if (err) {
             return callback(new errors.DefaultError(400, 'Error while getting list of users.'));
         } else {
             return callback(null, users);
         }
     });
-}
+};
 
 var _objectUnique = function(a) {
     return a.reduce(function(object, item) {
@@ -187,22 +185,22 @@ function getUserName(userID, callback) {
  *
  * @param userEmail the user that is being checked
  * @param callback
+ * @returns user if the user does not exist, returns null, otherwise
+ * the user object is returned
  */
 function userExists(userEmail, callback) {
     User.find({
         email: userEmail
     }, {
-        '_id': 1
+        '_id': 1,
+        'role' : 1,
+        'email' : 1
     }).limit(1).exec(function(err, user) {
         if (err) {
             //_logger.error(err);
             return callback(new errors.DefaultError(404, 'User not found with that ID.'));
         } else {
-            if (user.length === 0) {
-                return callback(null, false); //user does not exist
-            } else {
-                return callback(null, true); //user exists
-            }
+            return callback(null, user[0]); //if user[0] is undefined that means it does not exist
         }
     });
 }
@@ -267,36 +265,47 @@ function removeUser(userID, callback) {
 }
 
 /**
- * A call to this endpoint returns all the users associated with the apps registered google account
+ * Checks if a user is in the database, if not it will add the user, either way
+ * the user object is returned.
+ * 
+ * @param  userInfo Information about the user to check
+ * @param  callback 
+ * @return The user object from mongo
  */
-adminServices.getGoogleUsers = function(callback) {
-    _authService.getAuthClient(function(err, authClient){
+function checkForNewUser(userInfo, callback) {
+    userExists(userInfo.email, function(err, result) {
         if (err) {
-            return callback(new errors.DefaultError(500, 'Failed to authenticate the server with Google'));
+            return callback(err); //propagate error
         } else {
-            var service = google.admin('directory_v1');
-            service.users.list({
-                domain: domain,
-                fields: 'users(primaryEmail, name)',
-                maxResults: 500, // Default is 100. Maximum is 500.
-                auth: authClient
-            }, function(err, profiles) {
-                if (err){
-                    return callback(new errors.DefaultError(err.code, 'Failed to retrieve the list of Google Users'));
-                } else {
-                    return callback(null, profiles);
-                }
-            });
+            if (result === undefined) { //user does not exist
+                //create user
+                var _user = {
+                    name: userInfo.name,
+                    email: userInfo.email,
+                    phone: '0000000000',
+                    role: 0
+                };
+                addUser(_user, function(err, result){
+                    if (err) {
+                        return callback(err); //propagate error
+                    } else {
+                       return callback(null, result);
+                    }
+                });
+            } else {
+                return callback(null, result);
+            }
         }
+        
     });
-};
+}
 
+exports.adminServices = adminServices;
 
-exports.getAllUsers = getAllUsers;
 exports.getUserReservations = getUserReservations;
 exports.getUserName = getUserName;
 exports.userExists = userExists;
 exports.addUser = addUser;
 exports.removeUser = removeUser;
+exports.checkForNewUser = checkForNewUser;
 
-exports.adminServices = adminServices;

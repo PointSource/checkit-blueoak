@@ -23,14 +23,15 @@ var fs = require('fs');
 var lock = new ReadWriteLock(); // lock to use with checkout asset function
 
 var _logger,
-    assetLocations;
+    assetLocations,
+    _usersService;
 
 var adminServices = {};
 
-exports.init = function(logger, config, callback) {
+exports.init = function(logger, config, usersService, callback) {
     assetLocations = config.get('assetLocations');
     _logger = logger;
-    //_usersService = usersService;
+    _usersService = usersService;
     callback();
 };
 
@@ -507,7 +508,7 @@ function checkinAsset(requestBody, userEmail, callback) {
 
 TODO ADD COMMENT
 */
-adminServices.checkoutAssetWithEmail = function(requestBody, userEmail, callback) {
+adminServices.checkoutAssetForUser = function(requestBody, adminEmail, callback) {
     var recordData = {
         assetID: requestBody.assetID,
         type: 'checked_out',
@@ -515,17 +516,14 @@ adminServices.checkoutAssetWithEmail = function(requestBody, userEmail, callback
         return_date: requestBody.return_date
     };
     lock.writeLock(function(release) {
-        User.exists(requestBody.checkoutEmail, function(err, exists) {
+
+        _usersService.checkForNewUser(requestBody.userInfo, function(err, checkOutForUser){
             if (err) {
                 release();
                 return callback(new errors.MongooseError(err));
-            } else if (!exists) { //If the user does not exist
-                release();
-                return callback(new errors.DefaultError(400, 'Invalid email: ' +
-                    requestBody.checkoutEmail));
             } else {
-                User.findOne({
-                    'email': userEmail
+                User.findOne({ //get the admin user's userID
+                    'email': adminEmail
                 }, {
                     '_id': 1
                 }).exec(function(err, user) {
@@ -533,13 +531,13 @@ adminServices.checkoutAssetWithEmail = function(requestBody, userEmail, callback
                         release();
                         return callback(new errors.MongooseError(err));
                     } else {
-                        if (!user) {
+                        if (!user) { //if it couldnt find the admin user
                             release();
                             return callback(new errors.DefaultError(401, 'No user found for checkedOutFor with email ' +
-                                userEmail));
+                                adminEmail));
                         } else {
                             recordData.checkedOutByID = user._id;
-                            _createRecord(requestBody.checkoutEmail, recordData, function(err) {
+                            _createRecord(checkOutForUser.email, recordData, function(err) {
                                 if (err) {
                                     release();
                                     return callback(new errors.MongooseError(err));
@@ -558,6 +556,7 @@ adminServices.checkoutAssetWithEmail = function(requestBody, userEmail, callback
                     }
                 });
             }
+            
         });
 
     });

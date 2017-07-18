@@ -17,16 +17,12 @@ var errors = require('../util/errors.js'),
 var google = require('googleapis');
 var path = require('path');
 
-var url, _logger, serviceAccount, serviceScopes, appAccountEmail,
-companyDomains, serviceAccountEmail, serviceAccountKeyFile;
+var url, _logger, _usersService, companyDomains, serviceAccountKeyFile;
 
-exports.init = function(logger, config, callback) {
+exports.init = function(logger, usersService, config, callback) {
     url = 'https://www.googleapis.com';
     _logger = logger;
-
-    serviceAccount = config.get('google').serviceAccount;
-    serviceScopes = config.get('google').serviceScopes;
-    appAccountEmail = config.get('google').appAccountEmail;
+    _usersService = usersService;
 
     companyDomains = config.get('companyDomains');
 
@@ -47,10 +43,12 @@ function authenticateGoogle(idToken, session, callback) {
             if (_.isEmpty(companyDomains)) {
                 //if the user does not exist it creates one and adds it to the database.
                 //Either way it returns a user object
-                checkForNewUser(profileData, function(err, user) {
+                _usersService.checkForNewUser(profileData, function(err, user) {
                     if (err) {
                         return callback(new errors.DefaultError(500, 'Error creating user.'));
                     } else {
+                        console.log('USERS ROLE');
+                        console.log(user.role);
                         profileData.role = user.role;
                         profileData.userId = user._id;
                         return callback(null, profileData);
@@ -61,10 +59,12 @@ function authenticateGoogle(idToken, session, callback) {
                 if (_.contains(companyDomains, profileData.hd) === true) {
                     //if the user does not exist it creates one and adds it to the database.
                     //Either way it returns a user object
-                    checkForNewUser(profileData, function(err, user) {
+                    _usersService.checkForNewUser(profileData, function(err, user) {
                         if (err) {
                             return callback(new errors.DefaultError(500, 'Error creating user.'));
                         } else {
+                            console.log('USERS ROLE');
+                            console.log(user.role);
                             profileData.role = user.role;
                             profileData.userId = user._id;
                             return callback(null, profileData);
@@ -109,58 +109,4 @@ function getTokenInfo(idToken, callback) {
     });
 }
 
-//TODO move to usersService?
-function checkForNewUser(userInfo, callback) {
-    User.find({
-        email: userInfo.email
-    }, {
-        '_id': 1, //Limit the call to return only the user's id and role
-        'role': 1
-    }).limit(1).exec(function(err, user) {
-        if (err) {
-            //_logger.error(err);
-            return callback(new errors.DefaultError(500, 'Could not connect to database.'));
-        } else {
-            //user does not exist
-            if (user.length === 0) {
-                var _user = new User({
-                    name: userInfo.name,
-                    email: userInfo.email,
-                    phone: '0000000000',
-                    role: 0
-                });
-                _user.save(function(err) {
-                    if (err) {
-                        return callback(new errors.DefaultError(400, 'Error on persistence layer: ' + err.toString()));
-                    } else {
-                        return callback(null, _user);
-                    }
-                });
-            } else {
-                return callback(null, user[0]); //user exists
-            }
-        }
-    });
-}
-
-function getAuthClient(callback){
-    
-    var authClient = new google.auth.JWT(
-        serviceAccount.email,
-        path.resolve('./', serviceAccount.keyFile),
-        null,
-        serviceScopes,
-        appAccountEmail
-    );
-    
-    authClient.authorize(function(err, result) {
-        if (err) {
-            return callback(err);
-        }
-        return callback(null, authClient);
-    });
-}
-
-//
-exports.getAuthClient = getAuthClient;
 exports.authenticateGoogle = authenticateGoogle;
