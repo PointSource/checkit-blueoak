@@ -142,6 +142,7 @@
          * @private
          */
         vm.startCheckInOut = function() {
+            vm.isCheckoutFor = false;
 
             // First, check to see if the scanned device is validated
             if (!_isValidated()) {
@@ -190,6 +191,12 @@
          * @private
          */
         vm.scanSuccess = function(scanObj) {
+            // If user is on device, after scanner closes, the page will change back to the infoView
+            // If user is on browser, view will not change until device is validated (allowing user to modify ID input)
+            if (vm.onDevice) {
+                vm.switchView('infoView');
+            }
+
             if (!scanObj.cancelled) {
                 // First, check for if the input is blank
                 // For the modal; the scanner can't return a blank string
@@ -298,6 +305,7 @@
          * @private
          */
         function _checkOutSuccess(ret) {
+            vm.checkoutFor.originalObject = null;
 
             if (ret.status === 200) {
 

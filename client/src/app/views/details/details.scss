@@ -14,7 +14,8 @@
         overflow-x: hidden;
 
         .details-content {
-            min-height: 310px;
+            height: 100%;
+            overflow: auto;
             .device-info {
                 padding: 0 15px;
                 margin-bottom: 15px;
