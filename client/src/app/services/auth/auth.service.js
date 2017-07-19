@@ -22,7 +22,8 @@
         '$http',
         'appConfig',
         'UserService',
-        'ValidationService'
+        'ValidationService',
+        'GoogleUserService'
     ];
 
     /**
@@ -39,7 +40,57 @@
      * @constructor
      */
     function AuthService($q, $rootScope, GoogleService, UtilService,
-        $http, appConfig, UserService, ValidationService) {
+        $http, appConfig, UserService, ValidationService, GoogleUserService) {
+
+        /**
+         * Remaps the CheckIT user database to match the Google Directory schema.
+         * Email becomes primaryEmail, name.last becomes name.familyName,
+         * name.first becomes name.givenName, and a fullName field is added to name.
+         * @param  {object} json The user data
+         * @return {object} the remapped data  
+         */
+        function _remapCheckITUserData(json){
+            var users = [];
+            json.forEach(function(user) {
+                //Add fullName field
+                user.name.fullName = user.name.first + ' ' + user.name.last;
+                //Edit other field names
+                user.primaryEmail = user.email;
+                delete user.email;
+                user.name.familyName = user.name.last;
+                delete user.name.last;
+                user.name.givenName = user.name.first;
+                delete user.name.first;
+                users.push(user);
+            });
+            var data = {
+                users: users
+            };
+            return data;
+        }
+
+        /**
+         * Retrieves employee info using the GoogleUserService.
+         * @return {object} promsise
+         */
+        var _getEmployeeData = function() {
+            var q = $q.defer();
+
+            GoogleUserService.getUserDirectory().then(function(data){
+                    q.resolve(data);
+                },function(err){ //If the Google Directory call fails, fallback to the CheckIT database
+                    UserService.getUsers().then(function(data){
+                        UtilService.logError('signin', 'SigninController', 'Error using Google Direcotry API: ' + 
+                            err + 'Defaulting to CheckIT database...');
+                        var remappedData = _remapCheckITUserData(data);
+                        q.resolve(remappedData);
+                    }, function(err){
+                        UtilService.logError('signin', 'SigninController', 'Google Users error: ' + err);
+                        q.defer(err);
+                    });
+                });
+            return q.promise;
+        };
 
         /**
          * Callback function that is called on a successful login
@@ -65,7 +116,16 @@
                     UtilService.logInfo('auth', 'AuthService', 'Successful google authentication');
                     //set the current users ObjectId in session
                     UserService.setUserData(data);
-                    deferred.resolve();
+                    if (UserService.getUserRole() === 1) {
+                        _getEmployeeData(data).then(function(result){
+                            deferred.resolve();
+                            GoogleUserService.setUserDirectoryData(result);
+                        },function(){
+                            deferred.resolve();
+                        });
+                    } else {
+                         deferred.resolve();
+                    }
                 })
                 .error(function(err, status) {
                     UtilService.logError('auth', 'AuthService',

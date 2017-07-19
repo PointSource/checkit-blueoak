@@ -101,80 +101,6 @@
         }
 
         /**
-         * Adds a calendar event to the users phone to remind them to check in an overdue device.
-         * @param pickupDate -> when the asset is checked out. Must be moment Date object
-         * @param returnDate -> when the asset is to be checked in. Must be moment Date object
-         * @param assetName -> the name of the asset being checked out
-         * @private
-         */
-        function _addCalendarEvent(returnDate, assetName, assetLocation) {
-            var defer = $q.defer();
-
-            if ($window.Cordova || $window.cordova) {
-                //title MUST match the title parameter in the _removeCalendarEvent function
-                var notes = appConfig.eventConfig.notes;
-                var title = appConfig.eventConfig.title.replace('[asset_name]', assetName);
-                var startDate = moment(returnDate.set({
-                    'hour': 16,
-                    'minute': 0,
-                    'second': 0
-                })).toDate();
-                var endDate = moment(returnDate.set({
-                    'hour': 23,
-                    'minute': 59,
-                    'second': 59
-                })).toDate();
-
-
-                $window.plugins.calendar.createEvent(title,
-                    assetLocation,
-                    notes,
-                    startDate,
-                    endDate,
-                    function(id) {
-                        defer.resolve(id);
-                    },
-                    function(err) {
-                        defer.resolve(err);
-                    });
-            } else {
-                defer.resolve('Tried to add a calendar event when not on a device.');
-            }
-
-            return defer.promise;
-
-        }
-        /**
-         * Adds a calendar event to the users phone.
-         * @param assetName -> the name of the asset being checked in. Used to find the event
-         * to delete.
-         * @private
-         */
-        function _removeCalendarEvent(assetName) {
-            var defer = $q.defer();
-
-            if ($window.Cordova || $window.cordova) {
-                //title MUST match the title parameter in the _addCalendarEvent function
-                var title = appConfig.eventConfig.title.replace('[asset_name]', assetName);
-                var startDate = moment().subtract(7, 'years').toDate();
-                var endDate = moment().add(7, 'years').toDate();
-
-                $window.plugins.calendar.deleteEvent(title, null, null, startDate, endDate,
-                    function(id) {
-                        defer.resolve(id);
-                    },
-                    function(err) {
-                        defer.resolve(err);
-                    });
-            } else {
-                defer.resolve('Tried to remove a calendar event when not on a device.');
-            }
-
-            return defer.promise;
-
-        }
-
-        /**
          * Depending on the url this function either updates an existing asset or adds a new one
          */
         function _putAsset(newData, url) {
@@ -342,15 +268,7 @@
                         if (status === 200) {
 
                             //Successfully checked out for current user
-                            _addCalendarEvent(moment(returnDate), data.name, data.location.name).then(
-                                function(id) {
-                                    UtilService.logInfo('services', 'AssetService',
-                                        'successfully added calendar event with id: ' + id);
-                                    defer.resolve(ret);
-                                },
-                                function(err) {
-                                    defer.reject(err);
-                                });
+                            defer.resolve(ret);
                             //Notify menu controller that it's data is stale
                             $rootScope.$broadcast('ci:Update Reservations');
 
@@ -419,17 +337,9 @@
                         if (status === 200) {
 
                             //Successfully checked out for current user
-                            _addCalendarEvent(moment(returnDate), data.name, data.location.name).then(
-                                function(id) {
-                                    UtilService.logInfo('services', 'AssetService',
-                                        'successfully added calendar event with id: ' + id);
-                                    $rootScope.$broadcast('ci:Update Reservations');
-                                    defer.resolve(ret);
-                                },
-                                function(err) {
-                                    $rootScope.$broadcast('ci:Update Reservations');
-                                    defer.reject(err);
-                                });
+                            $rootScope.$broadcast('ci:Update Reservations');
+                            defer.resolve(ret);
+
                         } else if (status === 202) {
                             defer.resolve(ret);
                         }
@@ -478,17 +388,7 @@
 
                         // set borrower name and format status
                         _modSingleAsset(data);
-
-                        _removeCalendarEvent(data.name).then(
-                            function(id) {
-                                UtilService.logInfo('services', 'AssetService',
-                                    'successfully deleted calendar event: ' + id);
-                                defer.resolve(data);
-
-                            },
-                            function(err) {
-                                defer.resolve(err);
-                            });
+                        defer.resolve(data);
 
                     })
                     .error(function(data, status) {

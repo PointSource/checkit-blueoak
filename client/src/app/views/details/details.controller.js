@@ -234,7 +234,8 @@
                 vm.loadingState = '';
                 if (vm.isCheckoutFor) { //If in the checkout for someone else state
                     
-                    if (vm.checkoutFor.originalObject) { //If the user is defined
+                    //If the user is defined
+                    if (angular.isDefined(vm.checkoutFor) && angular.isDefined(vm.checkoutFor.originalObject)) { 
                         userInfo = {
                             email: vm.checkoutFor.description,
                             name: {
