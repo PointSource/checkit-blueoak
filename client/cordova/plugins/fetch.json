@@ -66,14 +66,6 @@
         "is_top_level": true,
         "variables": {}
     },
-    "cordova-plugin-calendar": {
-        "source": {
-            "type": "registry",
-            "id": "cordova-plugin-calendar"
-        },
-        "is_top_level": true,
-        "variables": {}
-    },
     "phonegap-plugin-barcodescanner": {
         "source": {
             "type": "registry",
@@ -84,13 +76,12 @@
     },
     "cordova-plugin-googleplus": {
         "source": {
-            "type": "git",
-            "url": "https://github.com/EddyVerbruggen/cordova-plugin-googleplus",
-            "subdir": "."
+            "type": "registry",
+            "id": "https://github.com/EddyVerbruggen/cordova-plugin-googleplus"
         },
         "is_top_level": true,
         "variables": {
-            "REVERSED_CLIENT_ID": ""
+            "REVERSED_CLIENT_ID": "com.googleusercontent.apps.809704557299-t4hficlgq61phi1jjhc64t8u4rede4o7"
         }
     }
 }
