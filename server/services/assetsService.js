@@ -24,14 +24,16 @@ var lock = new ReadWriteLock(); // lock to use with checkout asset function
 
 var _logger,
     assetLocations,
-    _usersService;
+    _usersService,
+    _notificationService;
 
 var adminServices = {};
 
-exports.init = function(logger, config, usersService, callback) {
+exports.init = function(logger, config, usersService, notificationService, callback) {
     assetLocations = config.get('assetLocations');
     _logger = logger;
     _usersService = usersService;
+    _notificationService = notificationService;
     callback();
 };
 
@@ -188,11 +190,104 @@ var _getRecordPickupDate = function(recordID, callback) {
     });
 };
 
+/**
+ * Retrieves an asset when provided its id
+ * @param  {string}   id       The asset's id
+ * @param  {Function} callback The function to return upon completetion
+ * @return {Function}            The callback function, callback(err, result)
+ */
+var _getAssetByID = function(id, callback) {
+    Asset.findOne({
+        '_id' : id
+    }, {}, function(err, asset) {
+        if (err) {
+            return callback(err);
+        } else {
+            if (!asset) {
+                return callback(new errors.DefaultError(401, 'No record found with ID: ' + id));
+            }
+            return callback(null, asset);
+        }
+    });
+};
+
+/**
+ * Helper method to convert checkin, checkout, create, or remove actions into a message.
+ * checkin : [User Name] + checked in the [Asset Name] (happyEmoji)
+ * checkout : [User Name] + checked out the [Asset Name] (happyEmoji)
+ * create : [Asset Name] was successfully added to CheckIT! (happyEmoji)
+ * remove : [Asset Name] was removed from CheckIT! (removeEmoji)
+ * 
+ * @param  {string} userEmail  The email of the user completing the action.
+ * @param  {string} adminEmail The email of the admin completeing the action.
+ * @param  {object} recordData The data of the record, used for determing action type and
+ *                             in some circumstances the asset name.
+ * @param  {string} assetName  (Optional) The name of the asset
+ * @return {string}            The message
+ */
+var _notificationHelper = function(userEmail, adminEmail, recordData, assetName) {
+    console.log(assetName);
+
+    var _createMessage = function(assetName, userName){
+        var msg = '';
+        switch (recordData.type) {
+        case 'checked_in':
+            msg = userName.first + ' ' + userName.last + 'checked in the ' + assetName + '.'; 
+            break;
+        case 'checked_out':
+            msg = userName.first + ' ' + userName.last + 'checked out the ' + assetName + '.';
+            break;
+        case 'created':
+            msg = assetName + ' was successfully added to CheckIT!'; 
+            break;
+        case 'deleted':
+            msg = assetName + ' was removed from CheckIT!'; 
+            break;
+        }
+        return msg;
+    };
+
+    _usersService.getUserByEmail(userEmail, function(err, user){
+        if (err) {
+            _logger(new errors.MongooseError(err));
+        } else {
+            var userName;
+            if (user) {
+                userName = user.name;
+            } else {
+                userName = '';
+            }
+            if (assetName !== undefined) {
+                _notificationService.notify(_createMessage(assetName, userName));
+            } else {
+                _getAssetByID(recordData.assetID, function(err, asset){
+                    if (err) {
+                        _logger(new errors.MongooseError(err));
+                    } else {
+                        assetName = asset.name;
+                        _notificationService.notify(_createMessage(assetName, userName));
+                    }
+                });
+            }
+        }
+    });
+    // if (adminEmail) {
+    //     var adminName;
+    //     _usersService.getUserNameByEmail(adminEmail, function(err, name){
+    //         if (err) {
+    //             _logger(new errors.MongooseError(err));
+    //         } else {
+    //             adminName = name;
+    //         }
+    // });
+    // }
+};
+
 /*
 successfull _createRecord should:
 locate the user doing the operation,
 create a record with the userID and recordData
-FINISH
+TODO FINISH
 
 */
 
@@ -212,7 +307,12 @@ var _createRecord = function(userEmail, recordData, callback) {
                 recordData.userID = user._id;
                 var _record = new Record(recordData);
                 _record.save(function(err) {
-                    return callback(err);
+                    if (err) {
+                        return callback(err);
+                    } else { //successful save of record
+                        _notificationHelper(userEmail, null, recordData);
+                        return callback(null);
+                    }
                 });
             }
         }
@@ -575,12 +675,13 @@ adminServices.removeAsset = function(assetID, callback) {
         if (err) {
             return callback(new errors.MongooseError(err));
         } else {
-            Asset.find({
+            Asset.findOneAndRemove({
                 _id: assetID
-            }).remove(function(err, asset) {
+            }, function(err, asset) {
                 if (err) {
                     return callback(new errors.MongooseError(err));
                 } else {
+                    _notificationHelper(null, null, {assetID:assetID, type:'deleted'}, asset.name);
                     return callback(null, asset);
                 }
             });
