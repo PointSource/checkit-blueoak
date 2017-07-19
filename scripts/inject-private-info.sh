@@ -23,7 +23,7 @@ sed -i "s|SET_MONGODB_PASSWORD_HERE|$MONGODB_PASSWORD|g" $WORKSPACE/server/confi
 # Injects the database decryption password into the client/src/app.config.json file
 sed -i "s|SET_DECRYPTION_PASSWORD_HERE|$DECRYPTION_PASSWORD|g" $WORKSPACE/server/config/default.json
 # Injects the Google domain into the client/src/app.config.json file
-sed -i "s|SET_GOOGLE_DOMAIN_HERE|$GOOGLE_DOMAIN|g" $WORKSPACE/server/config/default.json
+sed -i "s|SET_DOMAIN_HERE|$GOOGLE_DOMAIN|g" $WORKSPACE/server/config/default.json
 # Injects the service account email into the client/src/app.config.json file
 sed -i "s|SET_SERVICE_ACCOUNT_EMAIL_HERE|$SERVICE_ACCOUNT_EMAIL|g" $WORKSPACE/server/config/default.json
 # Injects the service account key file path into the client/src/app.config.json file
