@@ -76,6 +76,13 @@
             "id": 409625272
         }
     },
+    "notifications" : {
+        "method" : "SET_NOTIFICATION_METHOD_HERE",
+        "hipchat" : {
+            "roomID" : "SET_ROOM_ID_HERE",
+            "token" : "SET_AUTH_TOKEN_HERE"
+        }
+    },
     //This is used during the authentication phase to only allow users from a certain company
     //Leave this field empty to allow any domain
     "companyDomains": [],
