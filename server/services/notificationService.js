@@ -29,7 +29,25 @@ var _emailNotification = function(msg) {
  * @return {[type]}            [description]
  */
 var _hipchatNotification = function(msg, callback) {
-   
+    var hipchatMessage = msg;
+    var url = 'https://pointsource.hipchat.com/v2/room/' + hipchatConfig.roomID + '/notification';
+    var hipchatParams = {
+        method: 'POST',
+        uri: url,
+        qs: { auth_token: hipchatConfig.token },
+        json: {
+            color: 'green',
+            message: hipchatMessage,
+            notify: true,
+            message_format: 'text'
+        }
+    };
+    request.post(hipchatParams, function(err, response) {
+        if (err) {
+            _logger.error(err);
+            return callback(new errors.DefaultError(err));
+        } 
+    });
 };
 
 /**
