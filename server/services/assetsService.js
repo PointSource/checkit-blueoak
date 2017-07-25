@@ -232,16 +232,16 @@ var _notificationHelper = function(userEmail, adminEmail, recordData, assetName)
         var msg = '';
         switch (recordData.type) {
         case 'checked_in':
-            msg = userName.first + ' ' + userName.last + 'checked in the ' + assetName + '.'; 
+            msg = userName.first + ' ' + userName.last + ' checked in the ' + assetName + '.'; 
             break;
         case 'checked_out':
-            msg = userName.first + ' ' + userName.last + 'checked out the ' + assetName + '.';
+            msg = userName.first + ' ' + userName.last + ' checked out the ' + assetName + '.';
             break;
         case 'created':
-            msg = assetName + ' was successfully added to CheckIT!'; 
+            msg = assetName + ' was successfully added to CheckIT.'; 
             break;
         case 'deleted':
-            msg = assetName + ' was removed from CheckIT!'; 
+            msg = assetName + ' was removed from CheckIT.'; 
             break;
         }
         return msg;
