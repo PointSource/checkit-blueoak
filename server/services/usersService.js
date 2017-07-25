@@ -163,19 +163,34 @@ function getUserReservations(userEmail, callback) {
  * @param userID the userID that the search is based on
  * @param callback
  */
-function getUserName(userID, callback) {
-    User.find({
+function getUserByID(userID, callback) {
+    User.findOne({
         _id: userID
     }).exec(function(err, user) {
         if (err) {
-            //_logger.error(err);
-            return callback(new errors.DefaultError(404, 'User not found with that ID.'));
+            return callback(err);
         } else {
-            var userName = {
-                _id: userID,
-                name: user[0].name
-            };
-            return callback(null, userName);
+            return callback(null, user);
+        }
+    });
+}
+
+/**
+ * Retrieves the username of the user, given the userID
+ *
+ * @param userEmail the user's email that the search is based on
+ * @param callback
+ */
+function getUserByEmail(userEmail, callback) {
+    User.findOne({
+        email: userEmail
+    },{
+        'name': 1
+    }).exec(function(err, user) {
+        if (err) {
+            return callback(err);
+        } else {
+            return callback(null, user);
         }
     });
 }
@@ -303,7 +318,8 @@ function checkForNewUser(userInfo, callback) {
 exports.adminServices = adminServices;
 
 exports.getUserReservations = getUserReservations;
-exports.getUserName = getUserName;
+exports.getUserByID = getUserByID;
+exports.getUserByEmail = getUserByEmail;
 exports.userExists = userExists;
 exports.addUser = addUser;
 exports.removeUser = removeUser;
