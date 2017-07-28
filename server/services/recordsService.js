@@ -59,14 +59,15 @@ function getAssetRecords(assetID, callback) {
                             $in: adminIDs
                         }
                     }, {
-                        name: 1
+                        name: 1,
+                        email: 1
                     }).exec(function(err, adminUsers) {
 
                         var formattedUser;
                         var formattedUsers = {};
                         for (var i = 0; i < users.length; i++) {
                             formattedUser = {
-                                id: users[i]._id,
+                                email: users[i].email,
                                 name: users[i].name
                             };
                             formattedUsers[users[i]._id] = formattedUser;

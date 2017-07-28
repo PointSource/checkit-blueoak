@@ -96,7 +96,8 @@ var _formatAssets = function(assets, condensed, callback) {
                     $in: userIDs
                 }
             }, {
-                name: 1
+                name: 1,
+                email: 1
             }).sort('assetID').exec(function(err, users) {
                 /*jshint camelcase: false */
                 if (err) {
@@ -105,7 +106,7 @@ var _formatAssets = function(assets, condensed, callback) {
                     var formattedUser;
                     for (var i = 0; i < users.length; i++) {
                         formattedUser = {
-                            id: users[i]._id,
+                            email: users[i].email,
                             name: users[i].name
                         };
                         preppedUsers[users[i]._id] = formattedUser;
@@ -119,7 +120,7 @@ var _formatAssets = function(assets, condensed, callback) {
 
                             var formattedRecord = {
                                 id: records[j]._id,
-                                start: records[j].pickup_date,
+                                type: records[j].type,
                                 end: records[j].return_date,
                                 borrower: preppedUsers[records[j].userID]
                             };

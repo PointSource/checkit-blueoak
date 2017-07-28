@@ -88,12 +88,12 @@
          * @private
          */
         function _setBorrowerName(asset) {
-            var userId = UserService.getUserId(); //userId as recorded from login success
-
+            var userEmail = UserService.getUserEmail(); //userId as recorded from login success
+            
             // Check active reservations in asset
             for (var i = 0; i < asset['active_reservations'].length; i++) {
-                // The asset is yours if the borrower id of the active_reservation matches userId
-                if (userId === asset['active_reservations'][i].borrower.id) {
+                // The asset is yours if the borrower email of the active_reservation matches email
+                if (userEmail === asset['active_reservations'][i].borrower.email) {
                     asset['active_reservations'][i].borrower.name.first = 'You';
                     asset['active_reservations'][i].borrower.name.last = '';
                 }
