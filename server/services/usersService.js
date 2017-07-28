@@ -318,7 +318,8 @@ function checkForNewUser(userInfo, callback) {
 exports.adminServices = adminServices;
 
 exports.getUserReservations = getUserReservations;
-exports.getUserName = getUserName;
+exports.getUserByID = getUserByID;
+exports.getUserByEmail = getUserByEmail;
 exports.userExists = userExists;
 exports.addUser = addUser;
 exports.removeUser = removeUser;

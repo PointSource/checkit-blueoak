@@ -77,6 +77,20 @@ module.exports = {
             }
         });
     },
+    checkinAssetForUser: function(req, res, next) {
+        _logger.info('POSTing to /api/v1/admin/assets/checkin for ', req.body.userInfo.email);
+        _assetsService.adminServices.checkoutAssetForUser(req.body, req.session.email, function(err, result) {
+            if (err) {
+                if (err.status === 202) {
+                    res.status(err.status).send(result);
+                } else {
+                    next(err);
+                }
+            } else {
+                res.status(200).send(result);
+            }
+        });
+    },
     createAsset: function(req, res, next) {
         _logger.info('POSTing to /api/v1/admin/assets');
 
@@ -93,7 +107,7 @@ module.exports = {
 
         var assetID = req.params.assetID;
 
-        _assetsService.adminServices.removeAsset(assetID, function(err, result) {
+        _assetsService.adminServices.removeAsset(assetID, req.session.email, function(err, result) {
             if (err) {
                 next(err);
             } else {

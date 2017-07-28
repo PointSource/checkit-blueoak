@@ -231,8 +231,6 @@
             checkoutAsset: function(assetID, returnDate) {
                 var defer = $q.defer(); //initialize promise defer
 
-                //set the pickup date now so it is consistent when we use it later
-
                 var request = {
                     method: 'POST',
                     url: appConfig.apiHost + 'api/v1/assets/checkout',
@@ -242,7 +240,6 @@
                     },
                     data: {
                         assetID: assetID,
-                        'pickup_date': moment().toISOString(),
                         'return_date': moment(returnDate).utc()
                             .milliseconds(999)
                             .seconds(59)
@@ -301,8 +298,6 @@
                 var defer = $q.defer(); //initialize promise defer
                 var err = 'Error checking out asset ' + assetID + ': '; //error message on unsuccessful
 
-                //set the pickup date now so it is consistent when we use it later
-
                 var request = {
                     method: 'POST',
                     url: appConfig.apiHost + 'api/v1/admin/assets/checkout',
@@ -312,7 +307,6 @@
                     },
                     data: {
                         assetID: assetID,
-                        'pickup_date': moment().toISOString(),
                         'return_date': moment(returnDate).utc()
                             .milliseconds(999)
                             .seconds(59)
@@ -357,10 +351,9 @@
             /**
              * Checks in asset associated with the assetID and recordID
              * @param assetID -> id of the asset involved
-             * @param recordID -> id of the record involved
              * @returns {*} -> Promise object whose data is the updated asset details
              */
-            checkinAsset: function(assetID, recordID) {
+            checkinAsset: function(assetID) {
                 var defer = $q.defer(); //initialize promise defer
 
                 var request = {
@@ -371,8 +364,7 @@
                         'Content-Type': 'application/json'
                     },
                     data: {
-                        assetID: assetID,
-                        recordID: recordID
+                        assetID: assetID
                     }
                 };
 

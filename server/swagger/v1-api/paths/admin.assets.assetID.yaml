@@ -1,5 +1,5 @@
 delete:
-  description: 'Creates a new Asset from the given post body
+  description: 'Deletes an Asset specified by the assetID
 
     '
   operationId: deleteAsset
