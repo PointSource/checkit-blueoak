@@ -79,7 +79,7 @@ module.exports = {
     },
     checkinAssetForUser: function(req, res, next) {
         _logger.info('POSTing to /api/v1/admin/assets/checkin for ', req.body.userInfo.email);
-        _assetsService.adminServices.checkoutAssetForUser(req.body, req.session.email, function(err, result) {
+        _assetsService.adminServices.checkinAssetForUser(req.body, req.session.email, function(err, result) {
             if (err) {
                 if (err.status === 202) {
                     res.status(err.status).send(result);

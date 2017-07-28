@@ -393,7 +393,52 @@
                 //return the updated asset object
                 return defer.promise;
             },
+            /**
+             * Checks in asset associated with the assetID and recordID
+             * @param assetID -> id of the asset involved
+             * @returns {*} -> Promise object whose data is the updated asset details
+             */
+            checkinAssetForUser: function(assetID, userInfo) {
+                var defer = $q.defer(); //initialize promise defer
 
+                var request = {
+                    method: 'POST',
+                    url: appConfig.apiHost + 'api/v1/admin/assets/checkin',
+                    withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    data: {
+                        assetID: assetID,
+                        userInfo: userInfo
+                    }
+                };
+
+                //Make request
+                $http(request)
+                    .success(function(data) {
+
+                        //POST successful
+                        UtilService.logInfo('services', 'AssetService', 'Check-in successful');
+
+                        //Notify menu controller that it's data is stale
+                        $rootScope.$broadcast('ci:Update Reservations');
+
+                        // set borrower name and format status
+                        _modSingleAsset(data);
+                        defer.resolve(data);
+
+                    })
+                    .error(function(data, status) {
+                        //POST unsuccessful
+                        UtilService.logError('services', 'AssetService', status);
+
+                        defer.reject(data);
+                    });
+
+                //return the updated asset object
+                return defer.promise;
+            },
             /**
              * Deletes the asset from the database. This function should only be called from an admin
              * @param assetID the asset being deleted
