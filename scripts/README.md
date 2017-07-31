@@ -36,6 +36,11 @@ GOOGLE_DOMAIN="ENTER_GOOGLE_DOMAIN"
 SERVICE_ACCOUNT_EMAIL="ENTER_SERVICE_ACCOUNT_EMAIL"
 SERVICE_ACCOUNT_KEY_FILE_PATH="ENTER_SERVICE_ACCOUNT_KEY_FILE_PATH"
 APP_ACCOUNT_EMAIL="ENTER_APP_ACCOUNT_EMAIL"
+NOTIFICATION_METHOD="ENTER_NOTIFICATION_METHOD"
+# Remove the HIPCHAT_ROOM_ID variable if not using HipChat notifications
+HIPCHAT_ROOM_ID="ENTER_HIPCHAT_ROOM_ID"
+# Remove the HIPCHAT_AUTH_TOKEN variable if not using HipChat notifications
+HIPCHAT_AUTH_TOKEN="ENTER_HIPCHAT_AUTH_TOKEN"
 
 # Enter the company domains to restrict users who can access CheckIT.
 # To allow any user with a Gmail account, leave this field alone.
