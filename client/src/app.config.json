@@ -6,10 +6,6 @@
             "type": ["phone", "tablet", "laptop", "camera", "webcam", "projector", "watch", "misc"],
             "location": ["Raleigh", "Chicago"]
         },
-        "eventConfig": {
-            "title": "CheckIT: [asset_name] Due.",
-            "notes": "Device Due."
-        },
         "googleClientId": "SET_GOOGLE_CLIENT_ID_HERE",
         "googleScopes": "https://www.googleapis.com/auth/userinfo.email",
         "buildType": "debug"
