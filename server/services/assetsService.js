@@ -703,6 +703,8 @@ adminServices.editAsset = function(assetID, assetData, callback) {
                     if (err) {
                         return callback(new errors.MongooseError(err));
                     } else {
+                        _notificationHelper(userEmail, null,
+                            'edited', assetID);
                         return callback(null, asset);
                     }
                 });
