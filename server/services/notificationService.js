@@ -10,25 +10,26 @@ var _logger,
     hipchatConfig;
 
 exports.init = function(logger, config, callback) {
-   method = config.get('notifications').method;
-   hipchatConfig = config.get('notifications').hipchat;
+    method = config.get('notifications').method;
+    hipchatConfig = config.get('notifications').hipchat;
     _logger = logger;
 
     callback();
 };
 
 
-var _emailNotification = function(msg) {
+var _notifyEmail = function(msg) {
     //See https://nodemailer.com/smtp/oauth2/
 };
 
 /**
- * TODO FINISH COMMENT
- * @param  {[type]}   msg      [description]
- * @param  {Function} callback [description]
- * @return {[type]}            [description]
+ * Connects to a hipchat room specified in the config and
+ * sends a message to that room
+ * @param  {string}   msg      The message to send
+ * @param  {Function} callback The callback function
+ * @return {Function}          Returns the callback function
  */
-var _hipchatNotification = function(msg, callback) {
+var _notifyHipchat = function(msg, callback) {
     var hipchatMessage = msg;
     var url = 'https://pointsource.hipchat.com/v2/room/' + hipchatConfig.roomID + '/notification';
     var hipchatParams = {
@@ -44,22 +45,23 @@ var _hipchatNotification = function(msg, callback) {
     };
     request.post(hipchatParams, function(err, response) {
         if (err) {
-            _logger.error(err);
             return callback(new errors.DefaultError(err));
-        } 
+        } else {
+            return callback(null, response);
+        }
     });
 };
 
 /**
- * TODO FINSIH COMMENT
- * @param  {[type]} msg [description]
- * @return {[type]}     [description]
+ * Exposed method for other services to interact with notifications
+ * @param  {string} msg The message to send
+ * @return {Function} callback function     
  */
-function notify(msg) {
+function notify(msg, callback) {
     if (method === 'email') {
-        _emailNotification(msg);
+        return _notifyEmail(msg, callback);
     } else if (method === 'hipchat') {
-        _hipchatNotification(msg);
+        return _notifyHipchat(msg, callback);
     }
 }
 
