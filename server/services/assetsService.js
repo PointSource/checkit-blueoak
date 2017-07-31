@@ -98,7 +98,8 @@ var _formatAssets = function(assets, condensed, callback) {
                     $in: userIDs
                 }
             }, {
-                name: 1
+                name: 1,
+                email: 1
             }).sort('assetID').exec(function(err, users) {
                 /*jshint camelcase: false */
                 if (err) {
@@ -107,7 +108,7 @@ var _formatAssets = function(assets, condensed, callback) {
                     var formattedUser;
                     for (var i = 0; i < users.length; i++) {
                         formattedUser = {
-                            id: users[i]._id,
+                            email: users[i].email,
                             name: users[i].name
                         };
                         preppedUsers[users[i]._id] = formattedUser;
@@ -121,7 +122,7 @@ var _formatAssets = function(assets, condensed, callback) {
 
                             var formattedRecord = {
                                 id: records[j]._id,
-                                start: records[j].pickup_date,
+                                type: records[j].type,
                                 end: records[j].return_date,
                                 borrower: preppedUsers[records[j].userID]
                             };
@@ -168,24 +169,6 @@ var _formatAssets = function(assets, condensed, callback) {
                     return callback(null, returnedAssets);
                 }
             });
-        }
-    });
-};
-
-var _getRecordPickupDate = function(recordID, callback) {
-    /*jshint camelcase: false */
-    Record.findOne({
-        '_id': recordID
-    }, {
-        'pickup_date': 1
-    }, function(err, record) {
-        if (err) {
-            return callback(new errors.MongooseError(err));
-        } else {
-            if (!record) {
-                return callback(new errors.DefaultError(401, 'No record found with ID: ' + recordID));
-            }
-            return callback(null, record.pickup_date);
         }
     });
 };
@@ -413,7 +396,7 @@ function getAssets(query, callback) {
     var allTypes = 'phone tablet laptop webcam camera projector watch misc'.split(' ');
     //var type = [query.type];
     var type = (query.type) ? [query.type] : allTypes;
-    Asset.find({}, {
+    Asset.find({status : {$ne : 'retired'}}, {
             'categories': 1,
             'name': 1,
             'status': 1
@@ -490,8 +473,7 @@ function getAssetDetails(assetID, callback) {
  *      creates a new record document in the database.
  * @param {object} requestBody - The body of the request form the client. This must be in the format:
  *      {
- *          pickup_date: Date, -ISO formatted Dates
- *          return_date: Date
+ *          return_date: Date -ISO formatted Dates
  *      }
  * @param {string} assetID - Unique identifier from mongoDB in order to find this specific asset
  * @param {string} userEmail - The currently signed in user's email. Used for getting the UserID and
@@ -501,12 +483,9 @@ function getAssetDetails(assetID, callback) {
 function checkoutAsset(requestBody, userEmail, callback) {
     /*jshint camelcase: false */
 
-
-
     var recordData = {
         assetID: requestBody.assetID,
         type: 'checked_out',
-        pickup_date: requestBody.pickup_date,
         return_date: requestBody.return_date
     };
 
@@ -538,72 +517,74 @@ function checkoutAsset(requestBody, userEmail, callback) {
 function checkinAsset(requestBody, userEmail, callback) {
     /*jshint camelcase: false */
 
-    //Gets the pickup date of the record that related to the previous checked_out record
-    _getRecordPickupDate(requestBody.recordID, function(err, pickupDate) {
-        if (err) {
-            return callback(err);
-        } else {
-            var recordData = {
-                assetID: requestBody.assetID,
-                type: 'checked_in',
-                pickup_date: pickupDate,
-                return_date: requestBody.return_date
-            };
-            lock.writeLock(function(release) {
-                _createRecord(userEmail, recordData, function(err) {
-                    if (err) {
-                        release();
-                        return callback(new errors.MongooseError(err));
-                    } else {
-                        _changeAssetStatus(requestBody.assetID, 'available', function(error, asset) {
-                            release();
-                            if (error) {
-                                return callback(error);
-                            } else {
-                                return callback(null, asset);
-                            }
-                        });
-                    }
-                });
-            });
-        }
-    });
-
-
-
-
-    /*Record.update({
-        '_id': recordID
-    }, {
+    var recordData = {
+        assetID: requestBody.assetID,
         type: 'checked_in'
-    }, null, function(err, result) {
-        if (err) {
-            return callback(new errors.MongooseError(err));
-        } else {
-            if (result.ok !== 1) {
-                return callback(new errors.DefaultError(500, 'Error updating the record'));
+    };
+    lock.writeLock(function(release) {
+        _createRecord(userEmail, recordData, function(err) {
+            if (err) {
+                release();
+                return callback(new errors.MongooseError(err));
             } else {
-                Asset.update({
-                    '_id': assetID
-                }, {
-                    status: 'available'
-                }, null, function(err, result) {
-                    if (err) {
-                        return callback(new errors.MongooseError(err));
+                _changeAssetStatus(requestBody.assetID, 'available', function(error, asset) {
+                    release();
+                    if (error) {
+                        return callback(error);
                     } else {
-                        getAssetDetails(assetID, function(err, asset) {
-                            if (err) {
-                                return callback(new errors.MongooseError(err));
-                            } else {
-                                return callback(null, asset);
-                            }
-                        });
+                        return callback(null, asset);
                     }
                 });
             }
-        }
-    });*/
+        });
+    });
 }
+
+adminServices.checkinAssetForUser = function(requestBody, adminEmail, callback) {
+    var recordData = {
+        assetID: requestBody.assetID,
+        type: 'checked_in'
+    };
+    lock.writeLock(function(release) {
+
+        User.findOne({ //get the admin user's userID
+            'email': adminEmail
+        }, {
+            '_id': 1
+        }).exec(function(err, user) {
+            if (err) {
+                release();
+                return callback(new errors.MongooseError(err));
+            } else {
+                if (!user) { //if it couldnt find the admin user
+                    release();
+                    return callback(new errors.DefaultError(401, 'No user found for checkinAssetForUser with email ' +
+                        adminEmail));
+                } else {
+                    recordData.adminID = user._id;
+                    _createRecord(requestBody.userInfo.email, recordData, function(err) {
+                        if (err) {
+                            release();
+                            return callback(new errors.MongooseError(err));
+                        } else {
+                            _changeAssetStatus(requestBody.assetID, 'available', function(error, asset) {
+                                release();
+                                if (error) {
+                                    return callback(error);
+                                } else {
+                                    return callback(null, asset);
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+        });
+
+
+    });
+};
+
 /*
 
 TODO ADD COMMENT
@@ -612,12 +593,11 @@ adminServices.checkoutAssetForUser = function(requestBody, adminEmail, callback)
     var recordData = {
         assetID: requestBody.assetID,
         type: 'checked_out',
-        pickup_date: requestBody.pickup_date,
         return_date: requestBody.return_date
     };
     lock.writeLock(function(release) {
 
-        _usersService.checkForNewUser(requestBody.userInfo, function(err, checkOutForUser){
+        _usersService.checkForNewUser(requestBody.userInfo, function(err, checkOutForUser) {
             if (err) {
                 release();
                 return callback(new errors.MongooseError(err));
@@ -636,7 +616,7 @@ adminServices.checkoutAssetForUser = function(requestBody, adminEmail, callback)
                             return callback(new errors.DefaultError(401, 'No user found for checkedOutFor with email ' +
                                 adminEmail));
                         } else {
-                            recordData.checkedOutByID = user._id;
+                            recordData.adminID = user._id;
                             _createRecord(checkOutForUser.email, recordData, function(err) {
                                 if (err) {
                                     release();
@@ -656,7 +636,7 @@ adminServices.checkoutAssetForUser = function(requestBody, adminEmail, callback)
                     }
                 });
             }
-            
+
         });
 
     });
@@ -668,22 +648,32 @@ adminServices.checkoutAssetForUser = function(requestBody, adminEmail, callback)
  * @param {string} assetID - Unique identifier from mongoDB in order to find this specific asset
  * If successful the now deleted asset's data will be returned
  */
-adminServices.removeAsset = function(assetID, callback) {
-    Record.find({
-        'assetID': assetID
-    }).remove(function(err, records) {
+adminServices.removeAsset = function(assetID, userEmail, callback) {
+    var recordData = {
+        'assetID': assetID,
+        'type': 'removed'
+    };
+    _usersService.getUserByEmail(userEmail, function(err, user) {
         if (err) {
             return callback(new errors.MongooseError(err));
         } else {
-            Asset.findOneAndRemove({
-                _id: assetID
-            }, function(err, asset) {
-                if (err) {
-                    return callback(new errors.MongooseError(err));
-                } else {
-                    _notificationHelper(null, null, {assetID:assetID, type:'deleted'}, asset.name);
-                    return callback(null, asset);
-                }
+            recordData['userID'] = user._id;
+            lock.writeLock(function(release) {
+                _createRecord(userEmail, recordData, function(err) {
+                    if (err) {
+                        release();
+                        return callback(new errors.MongooseError(err));
+                    } else {
+                        _changeAssetStatus(assetID, 'retired', function(error, asset) {
+                            release();
+                            if (error) {
+                                return callback(error);
+                            } else {
+                                return callback(null, asset);
+                            }
+                        });
+                    }
+                });
             });
         }
     });

@@ -88,12 +88,12 @@
          * @private
          */
         function _setBorrowerName(asset) {
-            var userId = UserService.getUserId(); //userId as recorded from login success
-
+            var userEmail = UserService.getUserEmail(); //userId as recorded from login success
+            
             // Check active reservations in asset
             for (var i = 0; i < asset['active_reservations'].length; i++) {
-                // The asset is yours if the borrower id of the active_reservation matches userId
-                if (userId === asset['active_reservations'][i].borrower.id) {
+                // The asset is yours if the borrower email of the active_reservation matches email
+                if (userEmail === asset['active_reservations'][i].borrower.email) {
                     asset['active_reservations'][i].borrower.name.first = 'You';
                     asset['active_reservations'][i].borrower.name.last = '';
                 }
@@ -231,8 +231,6 @@
             checkoutAsset: function(assetID, returnDate) {
                 var defer = $q.defer(); //initialize promise defer
 
-                //set the pickup date now so it is consistent when we use it later
-
                 var request = {
                     method: 'POST',
                     url: appConfig.apiHost + 'api/v1/assets/checkout',
@@ -242,7 +240,6 @@
                     },
                     data: {
                         assetID: assetID,
-                        'pickup_date': moment().toISOString(),
                         'return_date': moment(returnDate).utc()
                             .milliseconds(999)
                             .seconds(59)
@@ -301,8 +298,6 @@
                 var defer = $q.defer(); //initialize promise defer
                 var err = 'Error checking out asset ' + assetID + ': '; //error message on unsuccessful
 
-                //set the pickup date now so it is consistent when we use it later
-
                 var request = {
                     method: 'POST',
                     url: appConfig.apiHost + 'api/v1/admin/assets/checkout',
@@ -312,7 +307,6 @@
                     },
                     data: {
                         assetID: assetID,
-                        'pickup_date': moment().toISOString(),
                         'return_date': moment(returnDate).utc()
                             .milliseconds(999)
                             .seconds(59)
@@ -357,10 +351,9 @@
             /**
              * Checks in asset associated with the assetID and recordID
              * @param assetID -> id of the asset involved
-             * @param recordID -> id of the record involved
              * @returns {*} -> Promise object whose data is the updated asset details
              */
-            checkinAsset: function(assetID, recordID) {
+            checkinAsset: function(assetID) {
                 var defer = $q.defer(); //initialize promise defer
 
                 var request = {
@@ -371,8 +364,7 @@
                         'Content-Type': 'application/json'
                     },
                     data: {
-                        assetID: assetID,
-                        recordID: recordID
+                        assetID: assetID
                     }
                 };
 
@@ -401,7 +393,52 @@
                 //return the updated asset object
                 return defer.promise;
             },
+            /**
+             * Checks in asset associated with the assetID and recordID
+             * @param assetID -> id of the asset involved
+             * @returns {*} -> Promise object whose data is the updated asset details
+             */
+            checkinAssetForUser: function(assetID, userInfo) {
+                var defer = $q.defer(); //initialize promise defer
 
+                var request = {
+                    method: 'POST',
+                    url: appConfig.apiHost + 'api/v1/admin/assets/checkin',
+                    withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    data: {
+                        assetID: assetID,
+                        userInfo: userInfo
+                    }
+                };
+
+                //Make request
+                $http(request)
+                    .success(function(data) {
+
+                        //POST successful
+                        UtilService.logInfo('services', 'AssetService', 'Check-in successful');
+
+                        //Notify menu controller that it's data is stale
+                        $rootScope.$broadcast('ci:Update Reservations');
+
+                        // set borrower name and format status
+                        _modSingleAsset(data);
+                        defer.resolve(data);
+
+                    })
+                    .error(function(data, status) {
+                        //POST unsuccessful
+                        UtilService.logError('services', 'AssetService', status);
+
+                        defer.reject(data);
+                    });
+
+                //return the updated asset object
+                return defer.promise;
+            },
             /**
              * Deletes the asset from the database. This function should only be called from an admin
              * @param assetID the asset being deleted

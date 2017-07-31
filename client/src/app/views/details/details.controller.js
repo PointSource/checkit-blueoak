@@ -168,8 +168,21 @@
 
                     vm.loadingState = ''; //Hide buttons until operation done
 
-                    AssetService.checkinAsset(vm.deviceData.id, vm.deviceData['active_reservations'][0].id)
-                        .then(_updateDeviceData, _checkInFail);
+                    if (vm.isAdmin) {
+                        //is an admin checking in a device he/she checked out?
+                        if (vm.deviceData['active_reservations'][0].borrower.name.first === 'You') { 
+                            AssetService.checkinAsset(vm.deviceData.id)
+                                .then(_updateDeviceData, _checkInFail);
+                        } else {
+                            var userInfo = vm.deviceData['active_reservations'][0].borrower;
+                            AssetService.checkinAssetForUser(vm.deviceData.id, userInfo)
+                                .then(_updateDeviceData, _checkInFail);
+                        }
+                    } else {
+                        AssetService.checkinAsset(vm.deviceData.id)
+                            .then(_updateDeviceData, _checkInFail);
+                    }
+                    
                 }
             }
         };

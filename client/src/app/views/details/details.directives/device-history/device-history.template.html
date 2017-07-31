@@ -18,7 +18,7 @@
             <div ng-switch-when="contentSuccess">
                 <div class="records">
                     <div ng-repeat="record in historyCtrl.records">
-                        <div ng-if="record.checked_out_by" class="largeRecord" ng-class="($index % 2 === 0) ? 'checkit-list-light': 'checkit-list-dark'">
+                        <div ng-if="record.admin_id" class="largeRecord" ng-class="($index % 2 === 0) ? 'checkit-list-light': 'checkit-list-dark'">
                             <div class="record-type">
                                 {{record.type | noscore | capitalize}}
                             </div>
@@ -29,10 +29,10 @@
                                 {{historyCtrl.formatDate(record.created)}}
                             </div>
                             <div class="record-name checked-out-by">
-                                By {{record.checked_out_by.name.first}} {{record.checked_out_by.name.last}}
+                                By {{record.admin_id.name.first}} {{record.admin_id.name.last}}
                             </div>
                         </div>
-                        <div ng-if="!record.checked_out_by" class="record" ng-class="($index % 2 === 0) ? 'checkit-list-light': 'checkit-list-dark'">
+                        <div ng-if="!record.admin_id" class="record" ng-class="($index % 2 === 0) ? 'checkit-list-light': 'checkit-list-dark'">
                             <div class="record-type">
                                 {{record.type | noscore | capitalize}}
                             </div>

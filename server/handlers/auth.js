@@ -28,7 +28,7 @@ module.exports = {
                 req.session.hd = result.hd;
                 console.log(req.session);
                 var returned = {
-                    userId: result.userId,
+                    userEmail: result.email,
                     userRole: result.role
                 };
 

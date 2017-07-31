@@ -37,11 +37,11 @@ function getAssetRecords(assetID, callback) {
             var amountCheckedOut = 0;
             var formattedRecords = [];
             var userIDs = [];
-            var checkedOutByUserIDs = [];
+            var adminIDs = [];
             for (var i = 0; i < records.length; i++) {
                 userIDs.push(records[i].userID);
 
-                checkedOutByUserIDs.push(records[i].checkedOutByID);
+                adminIDs.push(records[i].adminID);
 
             }
             User.find({
@@ -56,31 +56,32 @@ function getAssetRecords(assetID, callback) {
                 } else {
                     User.find({
                         '_id': {
-                            $in: checkedOutByUserIDs
+                            $in: adminIDs
                         }
                     }, {
-                        name: 1
-                    }).exec(function(err, checkedOutByUsers) {
+                        name: 1,
+                        email: 1
+                    }).exec(function(err, adminUsers) {
 
                         var formattedUser;
                         var formattedUsers = {};
                         for (var i = 0; i < users.length; i++) {
                             formattedUser = {
-                                id: users[i]._id,
+                                email: users[i].email,
                                 name: users[i].name
                             };
                             formattedUsers[users[i]._id] = formattedUser;
                         }
 
-                        var formattedCheckOutByUser;
-                        var formattedCheckOutByUsers = {};
-                        for (var k = 0; k < checkedOutByUserIDs.length; k++) {
-                            if (checkedOutByUsers[k] !== undefined) {
-                                formattedCheckOutByUser = {
-                                    id: checkedOutByUsers[k]._id,
-                                    name: checkedOutByUsers[k].name
+                        var formattedAdminUser;
+                        var formattedAdminUsers = {};
+                        for (var k = 0; k < adminIDs.length; k++) {
+                            if (adminUsers[k] !== undefined) {
+                                formattedAdminUser = {
+                                    id: adminUsers[k]._id,
+                                    name: adminUsers[k].name
                                 };
-                                formattedCheckOutByUsers[checkedOutByUsers[k]._id] = formattedCheckOutByUser;
+                                formattedAdminUsers[adminUsers[k]._id] = formattedAdminUser;
                             }
                         }
                         for (var j = records.length - 1; j >= 0; j--) {
@@ -95,8 +96,8 @@ function getAssetRecords(assetID, callback) {
                                 borrower: formattedUsers[record.userID]
                             };
 
-                            if (record.checkedOutByID) {
-                                formattedRecord['checked_out_by'] = formattedCheckOutByUsers[record.checkedOutByID];
+                            if (record.adminID) {
+                                formattedRecord['admin_id'] = formattedAdminUsers[record.adminID];
                             }
 
                             formattedRecords.push(formattedRecord);
