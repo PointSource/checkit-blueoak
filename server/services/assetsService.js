@@ -181,7 +181,7 @@ var _formatAssets = function(assets, condensed, callback) {
  */
 var _getAssetByID = function(id, callback) {
     Asset.findOne({
-        '_id' : id
+        '_id': id
     }, {}, function(err, asset) {
         if (err) {
             return callback(err);
@@ -201,69 +201,52 @@ var _getAssetByID = function(id, callback) {
  * create : [Asset Name] was successfully added to CheckIT! (happyEmoji)
  * remove : [Asset Name] was removed from CheckIT! (removeEmoji)
  * 
- * @param  {string} userEmail  The email of the user completing the action.
+ * @param  {string} ownerEmail The email of the user completing the action.
  * @param  {string} adminEmail The email of the admin completeing the action.
  * @param  {object} recordData The data of the record, used for determing action type and
  *                             in some circumstances the asset name.
- * @param  {string} assetName  (Optional) The name of the asset
+ * @param  {string} assetID    The id of the asset
  * @return {string}            The message
  */
-var _notificationHelper = function(userEmail, adminEmail, recordData, assetName) {
-    console.log(assetName);
+var _notificationHelper = function(ownerEmail, adminEmail, actionType, assetID) {
+    var msg = '';
+    var bothEmails = ownerEmail && adminEmail;
 
-    var _createMessage = function(assetName, userName){
-        var msg = '';
-        switch (recordData.type) {
-        case 'checked_in':
-            msg = userName.first + ' ' + userName.last + ' checked in the ' + assetName + '.'; 
-            break;
-        case 'checked_out':
-            msg = userName.first + ' ' + userName.last + ' checked out the ' + assetName + '.';
-            break;
-        case 'created':
-            msg = assetName + ' was successfully added to CheckIT.'; 
-            break;
-        case 'deleted':
-            msg = assetName + ' was removed from CheckIT.'; 
-            break;
-        }
-        return msg;
-    };
-
-    _usersService.getUserByEmail(userEmail, function(err, user){
-        if (err) {
-            _logger(new errors.MongooseError(err));
-        } else {
-            var userName;
-            if (user) {
-                userName = user.name;
-            } else {
-                userName = '';
+    _getAssetByID(assetID, function(err, asset) {
+        if (bothEmails) {
+            switch (actionType) {
+                case 'checked_in':
+                case 'checked_out':
+                    _usersService.getUserByEmail(adminEmail, function(err, admin) {
+                        _usersService.getUserByEmail(ownerEmail, function(err, owner) {
+                            msg = admin.name.first + ' ' + admin.name.last +
+                                ' ' + actionType.replace('_', ' ') + ' ' + asset.name + ' ' +
+                                'for ' + owner.name.first + ' ' + owner.name.last + '.';
+                            _notificationService.notify(msg, function(err, response) {
+                                if (err) {
+                                    _logger.error(err);
+                                } else {
+                                    _logger.info('Notification successfully sent.');
+                                }
+                            });
+                        });
+                    });
+                    break;
             }
-            if (assetName !== undefined) {
-                _notificationService.notify(_createMessage(assetName, userName));
-            } else {
-                _getAssetByID(recordData.assetID, function(err, asset){
+        } else {
+            _usersService.getUserByEmail(ownerEmail, function(err, owner) {
+                msg = owner.name.first + ' ' + owner.name.last +
+                    ' ' + actionType.replace('_', ' ') + ' ' + asset.name + '.';
+                _notificationService.notify(msg, function(err, response) {
                     if (err) {
-                        _logger(new errors.MongooseError(err));
+                        _logger.error(err);
                     } else {
-                        assetName = asset.name;
-                        _notificationService.notify(_createMessage(assetName, userName));
+                        _logger.info('Notification successfully sent.');
                     }
                 });
-            }
+            });
         }
     });
-    // if (adminEmail) {
-    //     var adminName;
-    //     _usersService.getUserNameByEmail(adminEmail, function(err, name){
-    //         if (err) {
-    //             _logger(new errors.MongooseError(err));
-    //         } else {
-    //             adminName = name;
-    //         }
-    // });
-    // }
 };
 
 /*
@@ -293,7 +276,6 @@ var _createRecord = function(userEmail, recordData, callback) {
                     if (err) {
                         return callback(err);
                     } else { //successful save of record
-                        _notificationHelper(userEmail, null, recordData);
                         return callback(null);
                     }
                 });
@@ -396,7 +378,7 @@ function getAssets(query, callback) {
     var allTypes = 'phone tablet laptop webcam camera projector watch misc'.split(' ');
     //var type = [query.type];
     var type = (query.type) ? [query.type] : allTypes;
-    Asset.find({status : {$ne : 'retired'}}, {
+    Asset.find({ status: { $ne: 'retired' } }, {
             'categories': 1,
             'name': 1,
             'status': 1
@@ -500,6 +482,8 @@ function checkoutAsset(requestBody, userEmail, callback) {
                     if (error) {
                         return callback(error);
                     } else {
+                        _notificationHelper(userEmail, null,
+                            recordData.type, recordData.assetID);
                         return callback(null, asset);
                     }
                 });
@@ -532,6 +516,8 @@ function checkinAsset(requestBody, userEmail, callback) {
                     if (error) {
                         return callback(error);
                     } else {
+                        _notificationHelper(userEmail, null,
+                            recordData.type, recordData.assetID);
                         return callback(null, asset);
                     }
                 });
@@ -572,6 +558,8 @@ adminServices.checkinAssetForUser = function(requestBody, adminEmail, callback) 
                                 if (error) {
                                     return callback(error);
                                 } else {
+                                    _notificationHelper(requestBody.userInfo.email, adminEmail,
+                                        recordData.type, recordData.assetID);
                                     return callback(null, asset);
                                 }
                             });
@@ -627,6 +615,8 @@ adminServices.checkoutAssetForUser = function(requestBody, adminEmail, callback)
                                         if (error) {
                                             return callback(error);
                                         } else {
+                                            _notificationHelper(checkOutForUser.email, adminEmail,
+                                                recordData.type, recordData.assetID);
                                             return callback(null, asset);
                                         }
                                     });
@@ -669,6 +659,8 @@ adminServices.removeAsset = function(assetID, userEmail, callback) {
                             if (error) {
                                 return callback(error);
                             } else {
+                                _notificationHelper(userEmail, null,
+                                    recordData.type, recordData.assetID);
                                 return callback(null, asset);
                             }
                         });
@@ -685,7 +677,7 @@ adminServices.removeAsset = function(assetID, userEmail, callback) {
  * @param {object} newAsset - The object of the what the edited asset
  */
 //db.assets.update({"_id": ObjectId("55e9aba6a2b279c3b7402602")}, {$set: {"type":"phone"}})
-adminServices.editAsset = function(assetID, assetData, callback) {
+adminServices.editAsset = function(assetID, assetData, userEmail, callback) {
     var find = {
             _id: assetID
         },
@@ -779,6 +771,8 @@ adminServices.createAsset = function(requestBody, userEmail, callback) {
                         if (err) {
                             return callback(new errors.MongooseError(err));
                         } else {
+                            _notificationHelper(userEmail, null,
+                                recordData.type, recordData.assetID);
                             callback(null, formattedAssets[0]);
                         }
                     });
