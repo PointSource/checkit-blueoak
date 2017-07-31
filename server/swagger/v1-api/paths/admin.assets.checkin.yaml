@@ -1,0 +1,29 @@
+post:
+  consumes: [application/json]
+  description: 'Checks in an asset for any user
+
+    '
+  operationId: checkinAssetForUser
+  parameters:
+  - description: Request body
+    in: body
+    name: body
+    required: true
+    schema:
+      properties:
+        assetID: {description: ID of asset to checkout, type: string}
+        userInfo: {description: The name and email of the user to check this device in to,
+          type: object}
+  produces: [application/json]
+  responses:
+    '200': {description: successfully checked in asset}
+    '401':
+      description: attempted to check in asset before being signed in
+      schema: {$ref: '../definitions/AuthorizationError.yaml'}
+    default:
+      description: unexpected error
+      schema: {$ref: '../definitions/DefaultError.yaml'}
+  summary: Checkin Asset
+  tags: [Assets, Admin]
+  x-middleware: [auth.authenticateHandler, auth.adminHandler]
+x-handler: assets

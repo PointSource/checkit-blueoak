@@ -8,7 +8,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
-var types = 'created checked_in checked_out reserved transfered canceled'.split(' ');
+var types = 'created checked_in checked_out removed'.split(' ');
 
 /**
  * Record Schema
@@ -25,8 +25,10 @@ var RecordSchema = new Schema({
         required: true,
         index: true
     },
-    checkedOutByID: {
-        type: ObjectId
+    adminID: {
+        type: ObjectId,
+        required: false,
+        index: true
     },
     type: {
         type: String,
@@ -34,11 +36,6 @@ var RecordSchema = new Schema({
         default: types[0],
         required: true,
         index: true
-    },
-    pickup_date: {
-        type: Date,
-        default: Date.now,
-        required: false
     },
     return_date: {
         type: Date,

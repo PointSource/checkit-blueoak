@@ -11,6 +11,7 @@ info: {description: Device Check Out, title: CheckIT API, version: 1.3.0, licens
 paths:
   /admin/assets: {$ref: v1-api/paths/admin.assets.yaml}
   /admin/assets/checkout: {$ref: v1-api/paths/admin.assets.checkout.yaml}
+  /admin/assets/checkin: {$ref: v1-api/paths/admin.assets.checkin.yaml}
   /admin/assets/{assetID}: {$ref: v1-api/paths/admin.assets.assetID.yaml}
   /assets: {$ref: v1-api/paths/assets.yaml}
   /assets/checkin: {$ref: v1-api/paths/assets.checkin.yaml}
