@@ -577,26 +577,6 @@ adminServices.removeAsset = function(assetID, userEmail, callback) {
             });
         }
     });
-
-
-
-    // Record.find({
-    //     'assetID': assetID
-    // }).remove(function(err, records) {
-    //     if (err) {
-    //         return callback(new errors.MongooseError(err));
-    //     } else {
-    //         Asset.find({
-    //             _id: assetID
-    //         }).remove(function(err, asset) {
-    //             if (err) {
-    //                 return callback(new errors.MongooseError(err));
-    //             } else {
-    //                 return callback(null, asset);
-    //             }
-    //         });
-    //     }
-    // });
 };
 
 /**
