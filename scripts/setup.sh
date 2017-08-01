@@ -23,6 +23,7 @@ echo 'Notification method options: disabled (leave blank), hipchat'
 read -p 'Enter the notification method (leave blank to disable) > ' NOTIFICATION_METHOD
 if [ "$NOTIFICATION_METHOD" = "hipchat" ]
 then
+	read -p 'Enter the HipChat Domain > ' HIPCHAT_DOMAIN
     read -p 'Enter the HipChat Room ID > ' HIPCHAT_ROOM_ID
     read -p 'Enter the HipChat Auth Token > ' HIPCHAT_AUTH_TOKEN
 fi

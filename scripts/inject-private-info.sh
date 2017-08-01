@@ -34,6 +34,8 @@ sed -i "s|SET_APP_ACCOUNT_EMAIL_HERE|$APP_ACCOUNT_EMAIL|g" $WORKSPACE/server/con
 sed -i "s|SET_NOTIFICATION_METHOD_HERE|$NOTIFICATION_METHOD|g" $WORKSPACE/server/config/default.json
 if [ "$NOTIFICATION_METHOD" = "hipchat" ]
 then
+	# Injects the HipChat Domain into the server/config/default.json file
+    sed -i "s|SET_HIPCHAT_DOMAIN_HERE|$HIPCHAT_DOMAIN|g" $WORKSPACE/server/config/default.json
     # Injects the HipChat Room ID into the server/config/default.json file
     sed -i "s|SET_HIPCHAT_ROOM_ID_HERE|$HIPCHAT_ROOM_ID|g" $WORKSPACE/server/config/default.json
     # Injects the HipChat Auth Token into the server/config/default.json file

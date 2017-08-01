@@ -79,6 +79,7 @@
     "notifications" : {
         "method" : "SET_NOTIFICATION_METHOD_HERE",
         "hipchat" : {
+            "domain" : "SET_HIPCHAT_DOMAIN_HERE",
             "roomID" : "SET_HIPCHAT_ROOM_ID_HERE",
             "token" : "SET_HIPCHAT_AUTH_TOKEN_HERE"
         }

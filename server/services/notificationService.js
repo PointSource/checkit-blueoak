@@ -31,7 +31,8 @@ var _notifyEmail = function(msg) {
  */
 var _notifyHipchat = function(msg, callback) {
     var hipchatMessage = msg;
-    var url = 'https://pointsource.hipchat.com/v2/room/' + hipchatConfig.roomID + '/notification';
+
+    var url = 'https://'+ hipchatConfig.domain +'/v2/room/' + hipchatConfig.roomID + '/notification';
     var hipchatParams = {
         method: 'POST',
         uri: url,
