@@ -24,14 +24,16 @@ var lock = new ReadWriteLock(); // lock to use with checkout asset function
 
 var _logger,
     assetLocations,
-    _usersService;
+    _usersService,
+    _notificationService;
 
 var adminServices = {};
 
-exports.init = function(logger, config, usersService, callback) {
+exports.init = function(logger, config, usersService, notificationService, callback) {
     assetLocations = config.get('assetLocations');
     _logger = logger;
     _usersService = usersService;
+    _notificationService = notificationService;
     callback();
 };
 
@@ -171,14 +173,99 @@ var _formatAssets = function(assets, condensed, callback) {
     });
 };
 
-/*
-successfull _createRecord should:
-locate the user doing the operation,
-create a record with the userID and recordData
-FINISH
+/**
+ * Retrieves an asset when provided its id
+ * @param  {string}   id       The asset's id
+ * @param  {Function} callback The function to return upon completion
+ * @return {Function}            The callback function, callback(err, result)
+ */
+var _getAssetByID = function(id, callback) {
+    Asset.findOne({
+        '_id': id
+    }, {}, function(err, asset) {
+        if (err) {
+            return callback(err);
+        } else {
+            if (!asset) {
+                return callback(new errors.DefaultError(401, 'No record found with ID: ' + id));
+            }
+            return callback(null, asset);
+        }
+    });
+};
 
-*/
+/**
+ * Helper method to convert checkin, checkout, create, or remove actions into a message.
+ * checkin      : [Owner Name] checked in the [Asset Name]
+ * checkout     : [Owner Name] checked out the [Asset Name]
+ * checkin for  : [Admin Name] checked in the [Asset Name] for [Owner Name]
+ * checkout for : [Admin Name] checked out the [Asset Name] for [Owner Name]
+ * create       : [User Name] added [Asset Name].
+ * edit         : [User Name] edited [Asset Name].
+ * remove       : [User Name] removed [Asset Name].
+ * 
+ * @param  {string} ownerEmail The email of the user completing the action.
+ * @param  {string} adminEmail (Optional) The email of the admin completing the action.
+ *                             If omitted only the ownerEmail is used.
+ * @param  {object} recordData The data of the record, used for determining action type and
+ *                             in some circumstances the asset name.
+ * @param  {string} assetID    The id of the asset
+ * @return {string}            The message
+ */
+var _notificationHelper = function(ownerEmail, adminEmail, actionType, assetID) {
+    var msg = '';
+    var bothEmails = ownerEmail && adminEmail;
 
+    _getAssetByID(assetID, function(err, asset) {
+        if (bothEmails) {
+            switch (actionType) {
+                case 'checked_in':
+                case 'checked_out':
+                    _usersService.getUserByEmail(adminEmail, function(err, admin) {
+                        _usersService.getUserByEmail(ownerEmail, function(err, owner) {
+                            msg = admin.name.first + ' ' + admin.name.last +
+                                ' ' + actionType.replace('_', ' ') + ' ' + asset.name + ' ' +
+                                'for ' + owner.name.first + ' ' + owner.name.last + '.';
+                            _notificationService.notify(msg, function(err, response) {
+                                if (err) {
+                                    _logger.error(err);
+                                } else {
+                                    _logger.info('Notification successfully sent.');
+                                }
+                            });
+                        });
+                    });
+                    break;
+            }
+        } else {
+            _usersService.getUserByEmail(ownerEmail, function(err, owner) {
+                msg = owner.name.first + ' ' + owner.name.last +
+                    ' ' + actionType.replace('_', ' ') + ' ' + asset.name + '.';
+                _notificationService.notify(msg, function(err, response) {
+                    if (err) {
+                        _logger.error(err);
+                    } else {
+                        _logger.info('Notification successfully sent.');
+                    }
+                });
+            });
+        }
+    });
+};
+
+/**
+ * Private helper method that creates a valid record as defined in the record schema. 
+ * @param  {string}   userEmail  The email of the user responsible for the record
+ * @param  {Object}   recordData Data about the record. 
+ *                               Common recordData structure is as follows:
+ *                               {
+ *                                assetID : the asset's id,
+ *                                type : the action 
+ *                                userID : the user's id
+ *                               }
+ * @param  {Function} callback   The callback function, used for promises.
+ * @return {Function}            The callback function.
+ */
 var _createRecord = function(userEmail, recordData, callback) {
     //locate user doing the operation
     User.findOne({
@@ -195,7 +282,11 @@ var _createRecord = function(userEmail, recordData, callback) {
                 recordData.userID = user._id;
                 var _record = new Record(recordData);
                 _record.save(function(err) {
-                    return callback(err);
+                    if (err) {
+                        return callback(err);
+                    } else { //successful save of record
+                        return callback(null);
+                    }
                 });
             }
         }
@@ -208,9 +299,7 @@ create a writelock while the asset state is changed
 
 */
 var _changeAssetStatus = function(assetID, status, callback) {
-    Asset.findOne({
-        '_id': assetID
-    }).exec(function(err, asset) {
+    _getAssetByID(assetID, function(err, asset){
         if (err) {
             return callback(new errors.MongooseError(err));
         } else if (!asset) {
@@ -296,7 +385,7 @@ function getAssets(query, callback) {
     var allTypes = 'phone tablet laptop webcam camera projector watch misc'.split(' ');
     //var type = [query.type];
     var type = (query.type) ? [query.type] : allTypes;
-    Asset.find({status : {$ne : 'retired'}}, {
+    Asset.find({ status: { $ne: 'retired' } }, {
             'categories': 1,
             'name': 1,
             'status': 1
@@ -400,6 +489,8 @@ function checkoutAsset(requestBody, userEmail, callback) {
                     if (error) {
                         return callback(error);
                     } else {
+                        _notificationHelper(userEmail, null,
+                            recordData.type, recordData.assetID);
                         return callback(null, asset);
                     }
                 });
@@ -432,6 +523,8 @@ function checkinAsset(requestBody, userEmail, callback) {
                     if (error) {
                         return callback(error);
                     } else {
+                        _notificationHelper(userEmail, null,
+                            recordData.type, recordData.assetID);
                         return callback(null, asset);
                     }
                 });
@@ -456,7 +549,7 @@ adminServices.checkinAssetForUser = function(requestBody, adminEmail, callback) 
                 release();
                 return callback(new errors.MongooseError(err));
             } else {
-                if (!user) { //if it couldnt find the admin user
+                if (!user) { //if it could not find the admin user
                     release();
                     return callback(new errors.DefaultError(401, 'No user found for checkinAssetForUser with email ' +
                         adminEmail));
@@ -472,6 +565,8 @@ adminServices.checkinAssetForUser = function(requestBody, adminEmail, callback) 
                                 if (error) {
                                     return callback(error);
                                 } else {
+                                    _notificationHelper(requestBody.userInfo.email, adminEmail,
+                                        recordData.type, recordData.assetID);
                                     return callback(null, asset);
                                 }
                             });
@@ -511,7 +606,7 @@ adminServices.checkoutAssetForUser = function(requestBody, adminEmail, callback)
                         release();
                         return callback(new errors.MongooseError(err));
                     } else {
-                        if (!user) { //if it couldnt find the admin user
+                        if (!user) { //if it could not find the admin user
                             release();
                             return callback(new errors.DefaultError(401, 'No user found for checkedOutFor with email ' +
                                 adminEmail));
@@ -527,6 +622,8 @@ adminServices.checkoutAssetForUser = function(requestBody, adminEmail, callback)
                                         if (error) {
                                             return callback(error);
                                         } else {
+                                            _notificationHelper(checkOutForUser.email, adminEmail,
+                                                recordData.type, recordData.assetID);
                                             return callback(null, asset);
                                         }
                                     });
@@ -569,6 +666,8 @@ adminServices.removeAsset = function(assetID, userEmail, callback) {
                             if (error) {
                                 return callback(error);
                             } else {
+                                _notificationHelper(userEmail, null,
+                                    recordData.type, recordData.assetID);
                                 return callback(null, asset);
                             }
                         });
@@ -585,7 +684,7 @@ adminServices.removeAsset = function(assetID, userEmail, callback) {
  * @param {object} newAsset - The object of the what the edited asset
  */
 //db.assets.update({"_id": ObjectId("55e9aba6a2b279c3b7402602")}, {$set: {"type":"phone"}})
-adminServices.editAsset = function(assetID, assetData, callback) {
+adminServices.editAsset = function(assetID, assetData, userEmail, callback) {
     var find = {
             _id: assetID
         },
@@ -603,6 +702,8 @@ adminServices.editAsset = function(assetID, assetData, callback) {
                     if (err) {
                         return callback(new errors.MongooseError(err));
                     } else {
+                        _notificationHelper(userEmail, null,
+                            'edited', assetID);
                         return callback(null, asset);
                     }
                 });
@@ -677,6 +778,8 @@ adminServices.createAsset = function(requestBody, userEmail, callback) {
                         if (err) {
                             return callback(new errors.MongooseError(err));
                         } else {
+                            _notificationHelper(userEmail, null,
+                                recordData.type, recordData.assetID);
                             callback(null, formattedAssets[0]);
                         }
                     });

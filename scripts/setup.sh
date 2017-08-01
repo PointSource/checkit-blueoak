@@ -19,6 +19,14 @@ read -p 'Enter the Google domain > ' GOOGLE_DOMAIN
 read -p 'Enter the service account email > ' SERVICE_ACCOUNT_EMAIL
 read -p 'Enter the service account key file path > ' SERVICE_ACCOUNT_KEY_FILE_PATH
 read -p 'Enter the app account email > ' APP_ACCOUNT_EMAIL
+echo 'Notification method options: disabled (leave blank), hipchat'
+read -p 'Enter the notification method (leave blank to disable) > ' NOTIFICATION_METHOD
+if [ "$NOTIFICATION_METHOD" = "hipchat" ]
+then
+	read -p 'Enter the HipChat Domain > ' HIPCHAT_DOMAIN
+    read -p 'Enter the HipChat Room ID > ' HIPCHAT_ROOM_ID
+    read -p 'Enter the HipChat Auth Token > ' HIPCHAT_AUTH_TOKEN
+fi
 
 echo
 
@@ -36,7 +44,7 @@ isFirstEntry="true"
 
 for element in "${companyDomainsArr[@]}"
 do
-    if [ $isFirstEntry = "true" ]
+    if [ "$isFirstEntry" = "true" ]
     then
         isFirstEntry="false"
         COMPANY_DOMAINS=$COMPANY_DOMAINS"\\\"$element\\\""

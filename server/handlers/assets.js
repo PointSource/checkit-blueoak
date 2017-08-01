@@ -121,7 +121,7 @@ module.exports = {
         var assetID = req.params.assetID;
         var assetData = req.body;
 
-        _assetsService.adminServices.editAsset(assetID, assetData, function(err, result) {
+        _assetsService.adminServices.editAsset(assetID, assetData, req.session.email, function(err, result) {
             if (err) {
                 next(err);
             } else {

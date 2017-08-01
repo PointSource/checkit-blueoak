@@ -8,6 +8,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
+//Types should be formatted as my_variable (use underscores as delimiters)
 var types = 'created checked_in checked_out removed'.split(' ');
 
 /**
