@@ -176,7 +176,7 @@ var _formatAssets = function(assets, condensed, callback) {
 /**
  * Retrieves an asset when provided its id
  * @param  {string}   id       The asset's id
- * @param  {Function} callback The function to return upon completetion
+ * @param  {Function} callback The function to return upon completion
  * @return {Function}            The callback function, callback(err, result)
  */
 var _getAssetByID = function(id, callback) {
@@ -196,14 +196,18 @@ var _getAssetByID = function(id, callback) {
 
 /**
  * Helper method to convert checkin, checkout, create, or remove actions into a message.
- * checkin : [User Name] + checked in the [Asset Name] (happyEmoji)
- * checkout : [User Name] + checked out the [Asset Name] (happyEmoji)
- * create : [Asset Name] was successfully added to CheckIT! (happyEmoji)
- * remove : [Asset Name] was removed from CheckIT! (removeEmoji)
+ * checkin      : [Owner Name] checked in the [Asset Name]
+ * checkout     : [Owner Name] checked out the [Asset Name]
+ * checkin for  : [Admin Name] checked in the [Asset Name] for [Owner Name]
+ * checkout for : [Admin Name] checked out the [Asset Name] for [Owner Name]
+ * create       : [User Name] added [Asset Name].
+ * edit         : [User Name] edited [Asset Name].
+ * remove       : [User Name] removed [Asset Name].
  * 
  * @param  {string} ownerEmail The email of the user completing the action.
- * @param  {string} adminEmail The email of the admin completeing the action.
- * @param  {object} recordData The data of the record, used for determing action type and
+ * @param  {string} adminEmail (Optional) The email of the admin completing the action.
+ *                             If omitted only the ownerEmail is used.
+ * @param  {object} recordData The data of the record, used for determining action type and
  *                             in some circumstances the asset name.
  * @param  {string} assetID    The id of the asset
  * @return {string}            The message
@@ -249,14 +253,19 @@ var _notificationHelper = function(ownerEmail, adminEmail, actionType, assetID) 
     });
 };
 
-/*
-successfull _createRecord should:
-locate the user doing the operation,
-create a record with the userID and recordData
-TODO FINISH
-
-*/
-
+/**
+ * Private helper method that creates a valid record as defined in the record schema. 
+ * @param  {string}   userEmail  The email of the user responsible for the record
+ * @param  {Object}   recordData Data about the record. 
+ *                               Common recordData structure is as follows:
+ *                               {
+ *                                assetID : the asset's id,
+ *                                type : the action 
+ *                                userID : the user's id
+ *                               }
+ * @param  {Function} callback   The callback function, used for promises.
+ * @return {Function}            The callback function.
+ */
 var _createRecord = function(userEmail, recordData, callback) {
     //locate user doing the operation
     User.findOne({
@@ -542,7 +551,7 @@ adminServices.checkinAssetForUser = function(requestBody, adminEmail, callback) 
                 release();
                 return callback(new errors.MongooseError(err));
             } else {
-                if (!user) { //if it couldnt find the admin user
+                if (!user) { //if it could not find the admin user
                     release();
                     return callback(new errors.DefaultError(401, 'No user found for checkinAssetForUser with email ' +
                         adminEmail));
@@ -599,7 +608,7 @@ adminServices.checkoutAssetForUser = function(requestBody, adminEmail, callback)
                         release();
                         return callback(new errors.MongooseError(err));
                     } else {
-                        if (!user) { //if it couldnt find the admin user
+                        if (!user) { //if it could not find the admin user
                             release();
                             return callback(new errors.DefaultError(401, 'No user found for checkedOutFor with email ' +
                                 adminEmail));
