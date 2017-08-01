@@ -299,9 +299,7 @@ create a writelock while the asset state is changed
 
 */
 var _changeAssetStatus = function(assetID, status, callback) {
-    Asset.findOne({
-        '_id': assetID
-    }).exec(function(err, asset) {
+    _getAssetByID(assetID, function(err, asset){
         if (err) {
             return callback(new errors.MongooseError(err));
         } else if (!asset) {
