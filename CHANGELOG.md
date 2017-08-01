@@ -4,12 +4,14 @@
 
 ### Added
 
-- Ability to check in device for another user as an admin.
+- Notification support for checking in and out, adding editing and removing an asset.
+- Integrated with HipChat to send notifications to a HipChat room.
 
 ### Changed
 
 - Asset schema now sets devices to retired.
 - Record schema now contains 'adminID' field.
+- History view to correctly reflect when an asset is checked in by an admin on behalf of a user.
 
 ### Removed
 
@@ -18,6 +20,7 @@
 ### Fixed
 
 - Bug that prevented deletion modal from closing.
+- Bug that would not update a user's reservations when an admin checked in the asset on behalf of the user.
 
 ## [3.0.0] - 2017-07-24
 
