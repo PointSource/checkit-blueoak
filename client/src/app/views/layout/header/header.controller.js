@@ -53,7 +53,10 @@
                         vm.title = 'edit device';
                         break;
                     case 'add':
-                        vm.title = 'add device'
+                        vm.title = 'add device';
+                        break;
+                    case 'history':
+                        vm.title = 'asset history';
                         break;
                     default:
                         vm.title = title + 's';

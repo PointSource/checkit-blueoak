@@ -91,6 +91,12 @@
             value: 'all'
         });
 
+        vm.history = {
+            name: 'ASSET HISTORY',
+            image: '',
+            value: 'history'
+        };
+
         vm.isOnDevice = UtilService.isOnDevice();
 
         /**
@@ -167,6 +173,10 @@
          */
         vm.goTo = function(state, params) {
             $rootScope.navigate(state, params);
+        };
+
+        vm.goToHistory = function(state) {
+            $rootScope.navigate(state);
         };
     }
 })();

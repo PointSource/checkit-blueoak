@@ -6,6 +6,7 @@
 
 - Notification support for checking in and out, adding editing and removing an asset.
 - Integrated with HipChat to send notifications to a HipChat room.
+- Chronological asset history view.
 
 ### Changed
 

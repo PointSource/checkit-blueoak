@@ -19,6 +19,10 @@
     <div class="asset-types-wrapper">
         <div class="asset-types">
             <category ng-repeat="category in vm.categories" content="category"></category>
+            <div class="asset-type row" ng-click="vm.goToHistory(vm.history.value)">
+                <div class="small-10 left">{{ vm.history.name }}</div>
+                <div class="small-2 right"><img ng-src="{{ vm.history.image }}"/></div>
+            </div>
         </div>
     </div>
 </div>

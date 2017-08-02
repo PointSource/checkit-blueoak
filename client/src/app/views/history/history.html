@@ -1,0 +1,51 @@
+<div class="chronological-history">
+    <div ng-switch on="vm.loadingState">
+        <div loading ng-switch-default></div>
+        <div ng-click="vm.chronologicalHistory()" error ng-switch-when="networkError"></div>
+
+        <div ng-switch-when="contentSuccess">
+            <div class="history-date-range-text">
+                {{vm.historyStartDate}} to {{vm.historyEndDate}}
+            </div>
+            <div class="records">
+                <div ng-repeat="record in vm.sortedHistoricalRecords">
+                    <div ng-if="record.recordInfo.admin_id" class="largeRecord" ng-class="($index % 2 === 0) ? 'checkit-list-light': 'checkit-list-dark'">
+                        <div class="record-title">
+                            {{record.assetName}} {{record.recordInfo.type | noscore | capitalize}}
+                        </div>
+                        <div class="record-name">
+                            For {{record.recordInfo.borrower.name.first}} {{record.recordInfo.borrower.name.last}}
+                        </div>
+                        <div class="record-date">
+                            {{vm.formatDate(record.recordInfo.created)}}
+                        </div>
+                        <div class="record-name checked-out-by">
+                            By {{record.recordInfo.admin_id.name.first}} {{record.recordInfo.admin_id.name.last}}
+                        </div>
+                    </div>
+                    <div ng-if="!record.recordInfo.admin_id" class="record" ng-class="($index % 2 === 0) ? 'checkit-list-light': 'checkit-list-dark'">
+                        <div class="record-title">
+                            {{record.assetName}} {{record.recordInfo.type | noscore | capitalize}}
+                        </div>
+                        <div class="record-name">
+                            {{record.recordInfo.borrower.name.first}} {{record.recordInfo.borrower.name.last}}
+                        </div>
+                        <div class="record-date">
+                            {{vm.formatDate(record.recordInfo.created)}}
+                        </div>
+                    </div>
+                </div>
+                <br>
+            </div>
+        </div>
+        <div ng-switch-when="contentEmpty">
+            <div class="misc-outer error" ng-click="vm.getData()">
+                <i class="fa fa-exclamation-circle fa-4x"></i>
+                <div class="misc-inner">
+                    <div>No assets found</div>
+                    <div>under this category!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
