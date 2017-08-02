@@ -43,10 +43,10 @@
         /** 
          * Function called if the getAssets promise succeeded.
          * Gets the records for each asset and sorts them chronologically.
-         * @param data the data returned by the promise
-         * @param historicalRecords array to store the historical asset records
-         * @param assets array that stores the assets returned by the promise
-         * @param chain variable to chain the RecordService function calls
+         * @param {Array} data the data returned by the promise
+         * @param {Array} historicalRecords array to store the historical asset records
+         * @param {Array} assets array that stores the assets returned by the promise
+         * @param {Promise} chain variable to chain the RecordService function calls
          */
         function gatherRecordsForAssets(data, historicalRecords, assets, chain) {
             for (var i = 0; i < data.length; i++) {
@@ -71,7 +71,7 @@
         /**
          * Function called if the getAssets promise failed.
          * Publishes the proper error modal according to the error code.
-         * @param err the error code returned by the promise
+         * @param {Object} err the error code returned by the promise
          */
         function getAssetsFail(err) {
             switch (err.status) {
@@ -97,10 +97,10 @@
 
         /** 
          * Gets the chronological records for an asset.
-         * @param assets array storing all assets from getAssets function call
-         * @param index points to the current index of the asset array to use for the getRecords function
-         * @param historicalRecords array to store the historical asset records
-         * @return all records within the past 3 months for the asset
+         * @param {Array} assets array storing all assets from getAssets function call
+         * @param {Integer} index points to the current index of the asset array to use for the getRecords function
+         * @param {Array} historicalRecords array to store the historical asset records
+         * @return {Array} all records within the past 3 months for the asset
          */
         function getChronologicalRecords(assets, index, historicalRecords) {
             // console.log(assets);
@@ -145,9 +145,9 @@
 
         /**
          * Sorts two asset records based on the created date for the record.
-         * @param a the first record to compare
-         * @param b the second record to compare
-         * @return 0 if record create date is identical, 1 if record a is after record b, -1 if record a is
+         * @param {Object} a the first record to compare
+         * @param {Object} b the second record to compare
+         * @return {Integer} 0 if record create date is identical, 1 if record a is after record b, -1 if record a is
          * before record b
          */
         function sortByCreatedTime(a, b) {
@@ -162,7 +162,7 @@
 
         /**
          * Formats the date that appears in a record
-         * @param date -- the date to format
+         * @param {Object} date the date to format
          */
         vm.formatDate = function (date) {
             var formatted = moment(date);

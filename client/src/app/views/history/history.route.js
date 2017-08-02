@@ -1,22 +1,22 @@
 (function() {
-	'use strict';
+    'use strict';
 
-	angular
-		.module('app.history')
-		.config(routerConfig);
+    angular
+        .module('app.history')
+        .config(routerConfig);
 
-	routerConfig.$inject = [
-		'$stateProvider', '$urlRouterProvider', 'snapRemoteProvider'
-	];
+    routerConfig.$inject = [
+        '$stateProvider', '$urlRouterProvider', 'snapRemoteProvider'
+    ];
 
-	function routerConfig($stateProvider, $urlRouterProvider, snapRemoteProvider) {
-		snapRemoteProvider.globalOptions = {
-			disable: 'left'
-		};
+    function routerConfig($stateProvider, $urlRouterProvider, snapRemoteProvider) {
+        snapRemoteProvider.globalOptions = {
+            disable: 'left'
+        };
 
-		// For any unmatched url, redirect to home
-		$urlRouterProvider.otherwise('/');
-		$stateProvider
+        // For any unmatched url, redirect to home
+        $urlRouterProvider.otherwise('/');
+        $stateProvider
             .state('history', {
                 parent: 'root',
                 url: '/history',
@@ -24,12 +24,12 @@
                     'content@': {
                         templateUrl: 'app/views/history/history.html',
                         controller: 'HistoryController',
-						controllerAs: 'vm'
+                        controllerAs: 'vm'
                     }
                 },
                 data: {
                     requiresAuthentication: true
                 }
             });
-	}
+    }
 })();
