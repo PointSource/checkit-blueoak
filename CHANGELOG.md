@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [3.1.0] - 2017-08-02
+
 ### Added
 
 - Notification support for checking in and out, adding editing and removing an asset.
@@ -62,6 +64,7 @@ Initial public release for CheckIT.
 - Admin users can add, edit, and remove devices.
 - Admin users can check out and check in assets for someone else.
 
-[Unreleased]: https://github.com/PointSource/checkit-blueoak/compare/v3.0.0...master
+[Unreleased]: https://github.com/PointSource/checkit-blueoak/compare/v3.1.0...master
+[3.1.0]: https://github.com/PointSource/checkit-blueoak/compare/v3.0.0...v3.1.0
 [3.0.0]: https://github.com/PointSource/checkit-blueoak/compare/v2.0.0...v3.0.0
 [2.0.0]: https://github.com/PointSource/checkit-blueoak/tree/v2.0.0
