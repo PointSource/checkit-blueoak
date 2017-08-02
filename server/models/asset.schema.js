@@ -8,11 +8,11 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
-var types = 'phone tablet laptop webcam camera projector watch'.split(' ');
+var types = 'phone tablet laptop webcam camera projector watch misc'.split(' ');
 var locations = 'Raleigh Chicago'.split(' ');
 var locationIds = [697673324, 409625272];
 var statuses = 'available in_use missing retired'.split(' ');
-var OSnames = 'Android iOS Windows WatchOS FireOS OSX'.split(' ');
+var OSnames = 'Android iOS Windows WatchOS FireOS OSX N/A'.split(' ');
 var attrTypes = 'string array object integer'.split(' ');
 
 /**
