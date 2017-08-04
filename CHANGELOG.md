@@ -2,6 +2,17 @@
 
 ## [Unreleased]
 
+## [3.1.1] - 2017-08-04
+
+### Removed
+
+- Ability to select content.
+
+### Fixed
+
+- Bug where icons where selectable.
+- Scanner crash on Android 6.x.
+
 ## [3.1.0] - 2017-08-03
 
 ### Added
@@ -64,7 +75,8 @@ Initial public release for CheckIT.
 - Admin users can add, edit, and remove devices.
 - Admin users can check out and check in assets for someone else.
 
-[Unreleased]: https://github.com/PointSource/checkit-blueoak/compare/v3.1.0...master
+[Unreleased]: https://github.com/PointSource/checkit-blueoak/compare/v3.1.1...master
+[3.1.1]: https://github.com/PointSource/checkit-blueoak/compare/v3.1.0...v3.1.1
 [3.1.0]: https://github.com/PointSource/checkit-blueoak/compare/v3.0.0...v3.1.0
 [3.0.0]: https://github.com/PointSource/checkit-blueoak/compare/v2.0.0...v3.0.0
 [2.0.0]: https://github.com/PointSource/checkit-blueoak/tree/v2.0.0
