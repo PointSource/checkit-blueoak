@@ -75,6 +75,7 @@
             $anchorScroll.yOffset = 10;
             $timeout(function() {
                 $location.hash('anchorid');
+                $location.replace();
                 $anchorScroll();
             });
         };
