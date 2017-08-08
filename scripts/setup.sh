@@ -40,6 +40,8 @@ IFS=' ' read -r -a companyDomainsArr <<< "$companyDomains"
 
 COMPANY_DOMAINS='\"companyDomains\":\ \['
 
+read -p 'Enter the iOS reverse client ID > ' IOS_REVERSE_CLIENT_ID
+
 isFirstEntry="true"
 
 for element in "${companyDomainsArr[@]}"

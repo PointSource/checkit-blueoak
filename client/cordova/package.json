@@ -12,7 +12,7 @@
             "cordova-plugin-statusbar": {},
             "cordova-plugin-whitelist": {},
             "cordova-plugin-googleplus": {
-                "REVERSED_CLIENT_ID": "googleclientidforiossigninhere"
+                "REVERSED_CLIENT_ID": "SET_IOS_REVERSE_CLIENT_ID_HERE"
             },
             "phonegap-plugin-barcodescanner": {
                 "CAMERA_USAGE_DESCRIPTION": "To scan QR codes"

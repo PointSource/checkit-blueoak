@@ -36,7 +36,7 @@
     <engine name="android" spec="^6.0.0" />
     <engine name="ios" spec="^4.4.0" />
     <plugin name="cordova-plugin-googleplus" spec="git+https://github.com/EddyVerbruggen/cordova-plugin-googleplus.git">
-        <variable name="REVERSED_CLIENT_ID" value="googleclientidforiossigninhere" />
+        <variable name="REVERSED_CLIENT_ID" value="SET_IOS_REVERSE_CLIENT_ID_HERE" />
     </plugin>
     <plugin name="cordova-plugin-splashscreen" spec="^2.1.0" />
     <plugin name="cordova-plugin-statusbar" spec="^1.0.1" />
