@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Back button functionality when viewing device history
+- Back button functionality when editing a device.
+
 ## [3.1.1] - 2017-08-04
 
 ### Removed
