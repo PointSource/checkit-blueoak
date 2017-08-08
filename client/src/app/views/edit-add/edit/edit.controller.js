@@ -100,15 +100,11 @@
                 .then(function(data) {
                     //vm.loadingState = 'contentSuccess';
                     vm.deviceData = data;
-                    $rootScope.navigate('details', {
-                        id: vm.deviceData.id
-                    });
+                    $rootScope.back();
                 }, function(err) {
                     //vm.loadingState = 'networkError';
                     UtilService.logError('edit', 'editController', 'failed to save edit: ' + err);
-                    $rootScope.navigate('details', {
-                        id: vm.deviceData.id
-                    });
+                    $rootScope.back();
                 });
         };
     }
