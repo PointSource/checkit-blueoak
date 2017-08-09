@@ -18,10 +18,48 @@
     <platform name="android">
         <allow-intent href="market:*" />
         <preference name="android-targetSdkVersion" value="22" />
+        <icon density="ldpi" src="../image_assets/icons/app_icon_1024x1024.png" />
+        <icon density="mdpi" src="../image_assets/icons/app_icon_1024x1024.png" />
+        <icon density="hdpi" src="../image_assets/icons/app_icon_1024x1024.png" />
+        <icon density="xhdpi" src="../image_assets/icons/app_icon_1024x1024.png" />
+        <icon density="xxhdpi" src="../image_assets/icons/app_icon_1024x1024.png" />
+        <icon density="xxxhdpi" src="../image_assets/icons/app_icon_1024x1024.png" />
+        <splash density="port-ldpi" src="../image_assets/splash/320x480.png" />
+        <splash density="port-mdpi" src="../image_assets/splash/360x600.png" />
+        <splash density="port-hdpi" src="../image_assets/splash/480x800.png" />
+        <splash density="port-xhdpi" src="../image_assets/splash/800x1280.png" />
+        <splash density="port-xxhdpi" src="../image_assets/splash/1024x1920.png" />
+        <splash density="port-xxxhdpi" src="../image_assets/splash/1242x2208.png" />
     </platform>
     <platform>
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
+    </platform>
+    <platform name="ios">
+        <icon height="180" src="../image_assets/icons/ios/Icon-App-60x60@3x.png" width="180" />
+        <icon height="60" src="../image_assets/icons/ios/Icon-App-60x60@1x.png" width="60" />
+        <icon height="120" src="../image_assets/icons/ios/Icon-App-60x60@2x.png" width="120" />
+        <icon height="76" src="../image_assets/icons/ios/Icon-App-76x76@1x.png" width="76" />
+        <icon height="152" src="../image_assets/icons/ios/Icon-App-76x76@2x.png" width="152" />
+        <icon height="40" src="../image_assets/icons/ios/Icon-App-40x40@1x.png" width="40" />
+        <icon height="80" src="../image_assets/icons/ios/Icon-App-40x40@2x.png" width="80" />
+        <icon height="57" src="../image_assets/icons/ios/Icon-App-57x57@1x.png" width="57" />
+        <icon height="114" src="../image_assets/icons/ios/Icon-App-57x57@2x.png" width="114" />
+        <icon height="72" src="../image_assets/icons/ios/Icon-App-72x72@1x.png" width="72" />
+        <icon height="144" src="../image_assets/icons/ios/Icon-App-72x72@2x.png" width="144" />
+        <icon height="29" src="../image_assets/icons/ios/Icon-App-29x29@1x.png" width="29" />
+        <icon height="58" src="../image_assets/icons/ios/Icon-App-29x29@2x.png" width="58" />
+        <icon height="87" src="../image_assets/icons/ios/Icon-App-29x29@3x.png" width="87" />
+        <icon height="50" src="../image_assets/icons/ios/Icon-Small-50x50@1x.png" width="50" />
+        <icon height="100" src="../image_assets/icons/ios/Icon-Small-50x50@2x.png" width="100" />
+        <icon height="167" src="../image_assets/icons/ios/Icon-App-83.5x83.5@2x.png" width="167" />
+        <splash height="480" src="../image_assets/splash/ios/Default~iphone.png" width="320" />
+        <splash height="960" src="../image_assets/splash/ios/Default@2x~iphone.png" width="640" />
+        <splash height="1024" src="../image_assets/splash/ios/Default-Portrait~ipad.png" width="768" />
+        <splash height="2048" src="../image_assets/splash/ios/Default-Portrait@2x~ipad.png" width="1536" />
+        <splash height="1136" src="../image_assets/splash/ios/Default-568h@2x~iphone.png" width="640" />
+        <splash height="1334" src="../image_assets/splash/ios/Default-667h.png" width="750" />
+        <splash height="2208" src="../image_assets/splash/ios/Default-736h.png" width="1242" />
     </platform>
     <allow-navigation href="https://*.google.com/*" />
     <allow-navigation href="https://www.googleapis.com/*" />
@@ -36,7 +74,7 @@
     <engine name="android" spec="^6.0.0" />
     <engine name="ios" spec="^4.4.0" />
     <plugin name="cordova-plugin-googleplus" spec="git+https://github.com/EddyVerbruggen/cordova-plugin-googleplus.git">
-        <variable name="REVERSED_CLIENT_ID" value="googleclientidforiossigninhere" />
+        <variable name="REVERSED_CLIENT_ID" value="SET_IOS_REVERSE_CLIENT_ID_HERE" />
     </plugin>
     <plugin name="cordova-plugin-splashscreen" spec="^2.1.0" />
     <plugin name="cordova-plugin-statusbar" spec="^1.0.1" />

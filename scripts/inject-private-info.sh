@@ -43,6 +43,8 @@ then
 fi
 # Injects the company domains into the server/config/default.json file
 sed -i "s|\"companyDomains\":\ \[\]|$COMPANY_DOMAINS|g" $WORKSPACE/server/config/default.json
+# Injects the reverse client ID into the client/cordova/package.json file
+sed -i "s|SET_IOS_REVERSE_CLIENT_ID_HERE|$IOS_REVERSE_CLIENT_ID|g" $WORKSPACE/client/cordova/package.json
 
 # Log that private information has been successfully injected
 echo "Private information successfully injected"

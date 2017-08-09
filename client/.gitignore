@@ -6,6 +6,8 @@ coverage/
 .sass-cache/
 cordova/www
 cordova/platforms/*
+cordova/plugins/*
+cordova/build.json
 UserInterfaceState.xcuserstate
 .tmp/
 dist/

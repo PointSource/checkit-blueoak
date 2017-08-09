@@ -1,0 +1,32 @@
+{
+    "name": "com.pointsource.checkit",
+    "version": "3.1.1",
+    "displayName": "CheckIT",
+    "cordova": {
+        "platforms": [
+            "android",
+            "ios"
+        ],
+        "plugins": {
+            "cordova-plugin-splashscreen": {},
+            "cordova-plugin-statusbar": {},
+            "cordova-plugin-whitelist": {},
+            "cordova-plugin-googleplus": {
+                "REVERSED_CLIENT_ID": "SET_IOS_REVERSE_CLIENT_ID_HERE"
+            },
+            "phonegap-plugin-barcodescanner": {
+                "CAMERA_USAGE_DESCRIPTION": "To scan QR codes"
+            }
+        }
+    },
+    "dependencies": {
+        "cordova-android": "^6.0.0",
+        "cordova-ios": "^4.4.0",
+        "cordova-plugin-compat": "^1.1.0",
+        "cordova-plugin-googleplus": "git+https://github.com/EddyVerbruggen/cordova-plugin-googleplus.git",
+        "cordova-plugin-splashscreen": "^2.1.0",
+        "cordova-plugin-statusbar": "^1.0.1",
+        "cordova-plugin-whitelist": "^1.3.2",
+        "phonegap-plugin-barcodescanner": "^6.0.8"
+    }
+}
