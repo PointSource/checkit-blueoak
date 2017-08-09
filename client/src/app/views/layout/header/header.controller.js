@@ -43,6 +43,9 @@
                     case 'details':
                         vm.title = title;
                         break;
+                    case 'software':
+                        vm.title = title;
+                        break;
                     case 'misc':
                         vm.title = title;
                         break;

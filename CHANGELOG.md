@@ -6,6 +6,7 @@
 
 - App icons and splash screens to Cordova config.
 - Predefined return dates to checkout flow.
+- Software category to asset types.
 
 ### Changed
 

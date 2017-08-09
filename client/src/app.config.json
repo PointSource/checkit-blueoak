@@ -3,7 +3,7 @@
         "apiHost": "http://localhost:3000/",
         "assetEnum": {
             "os": ["iOS", "Android", "Windows", "WatchOS", "FireOS", "OSX", "N/A"],
-            "type": ["phone", "tablet", "laptop", "camera", "webcam", "projector", "watch", "misc"],
+            "type": ["phone", "tablet", "laptop", "camera", "software", "misc"],
             "location": ["Raleigh", "Chicago"]
         },
         "googleClientId": "SET_GOOGLE_CLIENT_ID_HERE",

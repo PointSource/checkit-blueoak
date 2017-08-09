@@ -10,7 +10,7 @@ properties:
         type: object
       type:
         description: the kind of asset
-        enum: [phone, tablet, laptop, webcam, camera, projector, watch, misc]
+        enum: [phone, tablet, laptop, camera, software, misc]
         type: string
     type: object
   description: {description: the title of the asset, type: string}

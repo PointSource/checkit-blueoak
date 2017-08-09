@@ -8,7 +8,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
-var types = 'phone tablet laptop webcam camera projector watch misc'.split(' ');
+var types = 'phone tablet laptop camera software misc'.split(' ');
 var locations = 'Raleigh Chicago'.split(' ');
 var locationIds = [697673324, 409625272];
 var statuses = 'available in_use missing retired'.split(' ');

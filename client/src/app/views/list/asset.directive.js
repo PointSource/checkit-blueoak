@@ -70,9 +70,9 @@
                 imgUrl = 'assets/images/laptop_56x38.svg';
             } else if (vm.content.categories.type === 'camera') {
                 imgUrl = 'assets/images/camera_45x34.svg';
+            } else if (vm.content.categories.type === 'software') {
+                imgUrl = 'assets/images/code.svg';
             } else if (vm.content.categories.type === 'misc') {
-                imgUrl = 'assets/images/circle-thin-checkit-green.svg';
-            } else if (vm.content.categories.type === 'watch') {
                 imgUrl = 'assets/images/circle-thin-checkit-green.svg';
             } else {
                 imgUrl = 'assets/images/circle-thin-checkit-green.svg';

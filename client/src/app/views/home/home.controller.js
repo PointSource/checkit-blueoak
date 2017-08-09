@@ -76,6 +76,10 @@
             image: 'assets/images/camera_45x34.svg',
             value: 'camera'
         }, {
+            name: 'SOFTWARE',
+            image: 'assets/images/code.svg',
+            value: 'software'
+        }, {
             name: 'MISC',
             image: 'assets/images/circle-thin-checkit-green.svg',
             value: 'misc'
