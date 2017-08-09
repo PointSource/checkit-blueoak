@@ -2,10 +2,18 @@
 
 ## [Unreleased]
 
+### Added
+
+- App icons and splash screens to Cordova config.
+
+### Changed
+
+- Cordova files tracked in source control.
+
 ### Fixed
 
-- Back button functionality when viewing device history
-- Back button functionality when editing a device.
+- Back button functionality when viewing device history.
+- Back button functionality when editing a device.
 
 ## [3.1.1] - 2017-08-04
 
