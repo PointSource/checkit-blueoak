@@ -67,18 +67,7 @@
                         height: 52px;
                         position: relative;
 
-                        #htmldatepicker {
-                            position: absolute;
-                            height: 50px;
-                            width: 100%;
-                            margin: 0;
-                            font-size: 18px;
-                            line-height: 34px;
-                            z-index: 5;
-                            background-color: transparent;
-                            border: none;
-                            border-radius: 5px;
-                        }
+
 
                         ::-webkit-inner-spin-button {
                             display: none;
@@ -88,7 +77,7 @@
                             position: absolute;
                             margin: 0;
                             height: 50px;
-                            z-index: 0;
+                            z-index: 1;
                             width: 100%;
 
                             .date-input {
@@ -99,6 +88,39 @@
                                 border-bottom-left-radius: 5px;
                                 background-color: $checkit-signin-signout;
                                 height: 50px;
+                                #datepicker {
+                                    height: 50px;
+                                    width: 100%;
+                                    margin: 0;
+                                    font-size: 18px;
+                                    line-height: 34px;
+                                    z-index: 5;
+                                    background-color: transparent;
+                                    border: none;
+                                    border-radius: 5px;
+                                    font-weight: 300;
+                                    color: $checkit-background-base;
+                                    .dropdown {
+
+                                        margin-left: 0;
+                                        border-radius: 0;
+                                        border: none;
+                                        box-shadow: none;
+                                        top: 95%;
+                                        background-color: $checkit-signin-signout;
+                                        li a { 
+                                            font-weight: 300;
+                                            color: $checkit-background-base;
+                                            border: none;
+                                            box-shadow: none;
+                                        }
+                                        li:hover a {
+                                            background-color: $checkit-white;
+                                            border: none;
+                                            box-shadow: none;
+                                        }
+                                    }
+                                }
                             }
 
                             .date-image {

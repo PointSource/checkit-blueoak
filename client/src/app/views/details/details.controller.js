@@ -75,6 +75,24 @@
         vm.checkoutFor = {};
         vm.deleteDevice = {};
         vm.deleteDevice.fn = function() {};
+        vm.ddSelectOptions = [
+            {
+                text: 'One Day',
+                value: 'days'
+            },
+            {
+                text: 'One Week',
+                value: 'weeks'
+            },
+            {
+                text: 'One Month',
+                value: 'months'
+            }
+        ];
+        vm.ddSelectSelected = {
+            text: 'One Day',
+            value: 'day'
+        };
 
         /**
          * Changes the page's view state
@@ -242,9 +260,14 @@
          */
         vm.checkOutDevice = function() {
             var userInfo;
+
+            //Gets the value from the select dropdown and adds 1 of that value to the current date
+            var date = moment().add(1, vm.ddSelectSelected.value);
+
             var checkOut = function() {
                 //Hide buttons until operation done
                 vm.loadingState = '';
+                
                 if (vm.isCheckoutFor) { //If in the checkout for someone else state
                     
                     //If the user is defined
@@ -257,7 +280,7 @@
                             }
                         };
                         AssetService.checkoutAssetForUser(vm.deviceData.id,
-                            vm.datepicker.returnDate,
+                            date,
                             userInfo)
                         .then(_checkOutSuccess, _checkOutFail);
                     } else {
@@ -270,7 +293,7 @@
                     }
                 } else {
                     AssetService.checkoutAsset(vm.deviceData.id,
-                            vm.datepicker.returnDate)
+                            date)
                         .then(_checkOutSuccess, _checkOutFail);
                 }
             };
@@ -279,13 +302,12 @@
                 UtilService.logInfo('details', 'detailsContainer', 'Calling AssetService.checkoutAsset');
                 checkOut();
             } else {
-                var date = moment(vm.datepicker.returnDate);
                 //get the current moment then set it to the same time as the return date.
                 var now = moment().hour(date.hours())
                     .minute(date.minutes())
                     .second(date.seconds())
                     .millisecond(date.milliseconds());
-                var future = now.clone().add(3, 'weeks');
+                var future = now.clone().add(1, 'months');
                 if ((date.isBefore(future) && date.isAfter(now)) || date.isSame(future) || date.isSame(now)) {
                     UtilService.logInfo('details', 'detailsContainer', 'Calling AssetService.checkoutAsset');
                     checkOut();
