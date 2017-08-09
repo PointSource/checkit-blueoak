@@ -69,12 +69,12 @@
         ModalService.compile();
 
         vm.onDevice = UtilService.isOnDevice();
-        vm.datepicker = {};
-        vm.datepicker.returnDate = new Date();
+        vm.customReturnDate = new Date();
         vm.isCheckoutFor = false;
         vm.checkoutFor = {};
         vm.deleteDevice = {};
         vm.deleteDevice.fn = function() {};
+
         vm.ddSelectOptions = [
             {
                 text: 'One Day',
@@ -87,11 +87,35 @@
             {
                 text: 'One Month',
                 value: 'months'
+            },
+            {
+                text: 'Custom Date',
+                value: 'custom'
             }
         ];
         vm.ddSelectSelected = {
             text: 'One Day',
             value: 'day'
+        };
+        vm.isCustomDate = false;
+        vm.maxDate = moment().add(1, 'months').toISOString();
+        vm.minDate = moment().toISOString();
+
+        /**
+         * This function gets called every time the datepicker dropdown changes. 
+         * Changes the view to the custom date selection and resets the preselected
+         * dates dropdown.
+         * @param  {Object} selected The object the user last selected
+         * @return {[type]}          [description]
+         */
+        vm.ddChanged = function(selected) {
+            if (selected.value === 'custom') {
+                vm.isCustomDate = true;
+                vm.ddSelectSelected = {
+                    text: 'One Day',
+                    value: 'day'
+                };
+            }
         };
 
         /**
@@ -262,7 +286,7 @@
             var userInfo;
 
             //Gets the value from the select dropdown and adds 1 of that value to the current date
-            var date = moment().add(1, vm.ddSelectSelected.value);
+            var date = (vm.isCustomDate) ? moment(vm.customReturnDate) : moment().add(1, vm.ddSelectSelected.value);
 
             var checkOut = function() {
                 //Hide buttons until operation done
