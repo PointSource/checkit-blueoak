@@ -78,23 +78,28 @@
         vm.ddSelectOptions = [
             {
                 text: 'One Day',
+                amount: 1,
                 value: 'days'
             },
             {
                 text: 'One Week',
+                amount: 1,
                 value: 'weeks'
             },
             {
                 text: 'One Month',
+                amount: 1,
                 value: 'months'
             },
             {
                 text: 'Custom Date',
+                amount: 0,
                 value: 'custom'
             }
         ];
         vm.ddSelectSelected = {
             text: 'One Day',
+            amount: 1,
             value: 'day'
         };
         vm.isCustomDate = false;
@@ -113,6 +118,7 @@
                 vm.isCustomDate = true;
                 vm.ddSelectSelected = {
                     text: 'One Day',
+                    amount: 1,
                     value: 'day'
                 };
             }
@@ -286,7 +292,7 @@
             var userInfo;
 
             //Gets the value from the select dropdown and adds 1 of that value to the current date
-            var date = (vm.isCustomDate) ? moment(vm.customReturnDate) : moment().add(1, vm.ddSelectSelected.value);
+            var date = (vm.isCustomDate) ? moment(vm.customReturnDate) : moment().add(vm.ddSelectSelected.amount, vm.ddSelectSelected.value);
 
             var checkOut = function() {
                 //Hide buttons until operation done
@@ -370,6 +376,7 @@
             vm.isCustomDate = false;
             vm.ddSelectSelected = {
                 text: 'One Day',
+                amount: 1,
                 value: 'day'
             };
 
