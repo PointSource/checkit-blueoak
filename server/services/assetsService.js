@@ -382,7 +382,7 @@ function getAssets(query, callback) {
 
     var filter = (query.filter) ? query.filter : 'categories.type'; // defaults to filtering categories
     //TODO put this data in a config?
-    var allTypes = 'phone tablet laptop webcam camera projector watch misc'.split(' ');
+    var allTypes = 'phone tablet laptop camera software misc'.split(' ');
     //var type = [query.type];
     var type = (query.type) ? [query.type] : allTypes;
     Asset.find({ status: { $ne: 'retired' } }, {

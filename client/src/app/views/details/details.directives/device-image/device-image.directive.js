@@ -86,6 +86,9 @@
                 case 'camera':
                     imgUrl = 'assets/images/camera_45x34.svg';
                     break;
+                case 'software':
+                    imgUrl = 'assets/images/code.svg';
+                    break;
                 case 'misc':
                     imgUrl = 'assets/images/circle-thin-checkit-green.svg';
                     break;
