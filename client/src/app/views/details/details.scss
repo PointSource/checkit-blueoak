@@ -35,11 +35,6 @@
                 position: relative;
                 z-index: 4;
 
-                .instruction {
-                    color: $checkit-subcolor;
-                    text-align: right;
-                    font-size: 16px;
-                }
                 input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
                     color: $checkit-background-base;
                 }
@@ -58,7 +53,8 @@
 
                     .title {
                         color: $checkit-green;
-                        font-size: 28px;
+                        font-size: 20px;
+                        height: 24px;
                     }
 
                     .input-block {

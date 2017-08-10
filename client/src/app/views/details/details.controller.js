@@ -365,7 +365,13 @@
          * @private
          */
         function _checkOutSuccess(ret) {
+            // Reset back to default checkout values
             vm.checkoutFor.originalObject = null;
+            vm.isCustomDate = false;
+            vm.ddSelectSelected = {
+                text: 'One Day',
+                value: 'day'
+            };
 
             if (ret.status === 200) {
 
