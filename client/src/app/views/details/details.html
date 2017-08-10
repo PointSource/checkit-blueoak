@@ -34,17 +34,32 @@
                         <div class="checkout-view-container">
                             <div class="checkout-view row">
                                 <div class="datepicker">
-                                    <div class="title">return date:</div>
+                                    <div class="title">How long?</div>
                                     <div class="input-block">
-                                        <input id="htmldatepicker" ng-model="vm.datepicker.returnDate" type="date" />
+                                        <!-- Return date dropdown -->
+                                        <div ng-show="!vm.isCustomDate">
                                         <div class="row">
-                                            <div class="date-input"></div>
+                                            <div class="date-input">
+                                                <div id="datepicker" dropdown-select="vm.ddSelectOptions" dropdown-model="vm.ddSelectSelected" dropdown-onchange="vm.ddChanged(selected)">
+                                                </div>
+                                                
+                                            </div>
                                             <div class="date-image">
                                                 <img class="icon" src="assets/images/calendar_31x31.svg" alt="" />
                                             </div>
                                         </div>
+                                        </div>
+                                        <div ng-show="vm.isCustomDate" class="input-block">
+                                            <div class="row">
+                                                <div class="date-input">
+                                                    <input id="datepicker" ng-model="vm.customReturnDate" max="{{vm.maxDate | date:'yyyy-MM-dd'}}" min="{{vm.minDate | date:'yyyy-MM-dd'}}" type="date" />
+                                                </div>
+                                                <div class="date-image" ng-click="vm.isCustomDate = false">
+                                                    <i class="fa fa-remove"></i>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="instruction">Maximum three weeks.</div>
                                 </div>
                                 <!-- Admin only -->
                                 <div class="inputEmail" ng-if="vm.isAdmin">

@@ -20,6 +20,7 @@
             'app.filters',
             'ngFileUpload',
             'smoothScroll',
-            'angucomplete-alt'
+            'angucomplete-alt',
+            'ngDropdowns'
         ]);
 })();

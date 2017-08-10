@@ -22,7 +22,8 @@
     "foundation-sites": "6.2.x",
     "motion-ui": "^1.2.2",
     "animate.css": "^3.5.1",
-    "angucomplete-alt": "^3.0.0"
+    "angucomplete-alt": "^3.0.0",
+    "angular-dropdowns": "^1.5.1"
   },
   "resolutions": {
     "angular": "~1.4"

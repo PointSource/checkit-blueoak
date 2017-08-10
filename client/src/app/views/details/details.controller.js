@@ -69,12 +69,60 @@
         ModalService.compile();
 
         vm.onDevice = UtilService.isOnDevice();
-        vm.datepicker = {};
-        vm.datepicker.returnDate = new Date();
+        vm.customReturnDate = new Date();
         vm.isCheckoutFor = false;
         vm.checkoutFor = {};
         vm.deleteDevice = {};
         vm.deleteDevice.fn = function() {};
+
+        vm.ddSelectOptions = [
+            {
+                text: 'One Day',
+                amount: 1,
+                value: 'days'
+            },
+            {
+                text: 'One Week',
+                amount: 1,
+                value: 'weeks'
+            },
+            {
+                text: 'One Month',
+                amount: 1,
+                value: 'months'
+            },
+            {
+                text: 'Custom Date',
+                amount: 0,
+                value: 'custom'
+            }
+        ];
+        vm.ddSelectSelected = {
+            text: 'One Day',
+            amount: 1,
+            value: 'day'
+        };
+        vm.isCustomDate = false;
+        vm.maxDate = moment().add(1, 'months').toISOString();
+        vm.minDate = moment().toISOString();
+
+        /**
+         * This function gets called every time the datepicker dropdown changes. 
+         * Changes the view to the custom date selection and resets the preselected
+         * dates dropdown.
+         * @param  {Object} selected The object the user last selected
+         * @return {[type]}          [description]
+         */
+        vm.ddChanged = function(selected) {
+            if (selected.value === 'custom') {
+                vm.isCustomDate = true;
+                vm.ddSelectSelected = {
+                    text: 'One Day',
+                    amount: 1,
+                    value: 'day'
+                };
+            }
+        };
 
         /**
          * Changes the page's view state
@@ -242,9 +290,14 @@
          */
         vm.checkOutDevice = function() {
             var userInfo;
+
+            //Gets the value from the select dropdown and adds 1 of that value to the current date
+            var date = (vm.isCustomDate) ? moment(vm.customReturnDate) : moment().add(vm.ddSelectSelected.amount, vm.ddSelectSelected.value);
+
             var checkOut = function() {
                 //Hide buttons until operation done
                 vm.loadingState = '';
+                
                 if (vm.isCheckoutFor) { //If in the checkout for someone else state
                     
                     //If the user is defined
@@ -257,7 +310,7 @@
                             }
                         };
                         AssetService.checkoutAssetForUser(vm.deviceData.id,
-                            vm.datepicker.returnDate,
+                            date,
                             userInfo)
                         .then(_checkOutSuccess, _checkOutFail);
                     } else {
@@ -270,7 +323,7 @@
                     }
                 } else {
                     AssetService.checkoutAsset(vm.deviceData.id,
-                            vm.datepicker.returnDate)
+                            date)
                         .then(_checkOutSuccess, _checkOutFail);
                 }
             };
@@ -279,13 +332,12 @@
                 UtilService.logInfo('details', 'detailsContainer', 'Calling AssetService.checkoutAsset');
                 checkOut();
             } else {
-                var date = moment(vm.datepicker.returnDate);
                 //get the current moment then set it to the same time as the return date.
                 var now = moment().hour(date.hours())
                     .minute(date.minutes())
                     .second(date.seconds())
                     .millisecond(date.milliseconds());
-                var future = now.clone().add(3, 'weeks');
+                var future = now.clone().add(1, 'months');
                 if ((date.isBefore(future) && date.isAfter(now)) || date.isSame(future) || date.isSame(now)) {
                     UtilService.logInfo('details', 'detailsContainer', 'Calling AssetService.checkoutAsset');
                     checkOut();
@@ -319,7 +371,14 @@
          * @private
          */
         function _checkOutSuccess(ret) {
+            // Reset back to default checkout values
             vm.checkoutFor.originalObject = null;
+            vm.isCustomDate = false;
+            vm.ddSelectSelected = {
+                text: 'One Day',
+                amount: 1,
+                value: 'day'
+            };
 
             if (ret.status === 200) {
 
