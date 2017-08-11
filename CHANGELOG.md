@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [3.2.0] - 2017-08-11
+
 ### Added
 
 - App icons and splash screens to Cordova config.
@@ -90,7 +92,8 @@ Initial public release for CheckIT.
 - Admin users can add, edit, and remove devices.
 - Admin users can check out and check in assets for someone else.
 
-[Unreleased]: https://github.com/PointSource/checkit-blueoak/compare/v3.1.1...master
+[Unreleased]: https://github.com/PointSource/checkit-blueoak/compare/v3.2.0...master
+[3.2.0]: https://github.com/PointSource/checkit-blueoak/compare/v3.1.1...v3.2.0
 [3.1.1]: https://github.com/PointSource/checkit-blueoak/compare/v3.1.0...v3.1.1
 [3.1.0]: https://github.com/PointSource/checkit-blueoak/compare/v3.0.0...v3.1.0
 [3.0.0]: https://github.com/PointSource/checkit-blueoak/compare/v2.0.0...v3.0.0
