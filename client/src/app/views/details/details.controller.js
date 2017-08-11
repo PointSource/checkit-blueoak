@@ -103,7 +103,6 @@
             value: 'day'
         };
         vm.isCustomDate = false;
-        vm.maxDate = moment().add(1, 'months').toISOString();
         vm.minDate = moment().toISOString();
 
         /**
@@ -209,6 +208,12 @@
                 }
             } else {
                 if (vm.buttonStyles.class === 'checkout') {
+                    // Ensure that only the allowed dates checkout are visible in the date picker
+                    // Any checkout date not prior to today is allowed for laptops
+                    // Only dates 1 month in the future are allowed for other assets
+                    if (vm.deviceData.categories.type !== 'laptop') {
+                        vm.maxDate = moment().add(1, 'months').toISOString();
+                    }
                     vm.switchView('checkoutView');
                     //Not calling service here. CheckOutDevice is when it is called.
                 } else if (vm.buttonStyles.class === 'checkin') {
