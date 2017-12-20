@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- Book category to asset types.
+
 ## [3.2.0] - 2017-08-11
 
 ### Added

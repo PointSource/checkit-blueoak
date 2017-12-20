@@ -63,6 +63,9 @@
                 case 'software':
                     imgUrl = 'assets/images/code.svg';
                     break;
+                case 'book':
+                    imgUrl = 'assets/images/book.svg';
+                    break;
                 case 'misc':
                     imgUrl = 'assets/images/circle-thin-checkit-green.svg';
                     break;

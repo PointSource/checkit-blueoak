@@ -80,6 +80,10 @@
             image: 'assets/images/code.svg',
             value: 'software'
         }, {
+            name: 'BOOK',
+            image: 'assets/images/book.svg',
+            value: 'book'
+        }, {
             name: 'MISC',
             image: 'assets/images/circle-thin-checkit-green.svg',
             value: 'misc'
