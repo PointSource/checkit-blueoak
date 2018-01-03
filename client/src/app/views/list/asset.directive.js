@@ -72,6 +72,8 @@
                 imgUrl = 'assets/images/camera_45x34.svg';
             } else if (vm.content.categories.type === 'software') {
                 imgUrl = 'assets/images/code.svg';
+            } else if (vm.content.categories.type === 'book') {
+                imgUrl = 'assets/images/book.svg';
             } else if (vm.content.categories.type === 'misc') {
                 imgUrl = 'assets/images/circle-thin-checkit-green.svg';
             } else {
