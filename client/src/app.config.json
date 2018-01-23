@@ -7,7 +7,7 @@
             "location": ["Raleigh", "Chicago"]
         },
         "googleClientId": "SET_GOOGLE_CLIENT_ID_HERE",
-        "googleScopes": "https://www.googleapis.com/auth/userinfo.email",
+        "googleScopes": "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/admin.directory.user.readonly",
         "buildType": "debug"
     }
 }

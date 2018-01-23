@@ -73,10 +73,10 @@
          * Retrieves employee info using the GoogleUserService.
          * @return {object} promsise
          */
-        var _getEmployeeData = function() {
+        var _getEmployeeData = function(accessToken) {
             var q = $q.defer();
 
-            GoogleUserService.getUserDirectory().then(function(data){
+            GoogleUserService.getUserDirectory(accessToken).then(function(data){
                     q.resolve(data);
                 },function(err){ //If the Google Directory call fails, fallback to the CheckIT database
                     UserService.getUsers().then(function(data){
@@ -96,7 +96,7 @@
          * Callback function that is called on a successful login
          * @param idToken -> The google auth token
          */
-        var _loginSuccess = function(idToken) {
+        var _loginSuccess = function(idToken, accessToken) {
             var deferred = $q.defer();
             // Pass code to the server for exchange
             var request = {
@@ -113,11 +113,14 @@
 
             $http(request)
                 .success(function(data) {
+                    console.log('client auth.service.js:_loginSuccess');
+                    console.log(data);
                     UtilService.logInfo('auth', 'AuthService', 'Successful google authentication');
                     //set the current users ObjectId in session
                     UserService.setUserData(data);
                     if (UserService.getUserRole() === 1) {
-                        _getEmployeeData(data).then(function(result){
+                        _getEmployeeData(accessToken).then(function(result){
+                            console.log(result);
                             deferred.resolve();
                             GoogleUserService.setUserDirectoryData(result);
                         },function(){
@@ -199,9 +202,11 @@
                 //startgoogle
                 if (method === 'google') {
                     GoogleService.login(appConfig.apiKeys).then(function(authResult) {
-                            _loginSuccess(authResult.idToken).then(function() {
-                                deferred.resolve(authResult);
+                            _loginSuccess(authResult.idToken, authResult.accessToken).then(function() {
+                                console.log('client auth.service.js:login');
+                                console.log(authResult);
                                 setIsAuthenticated(true);
+                                deferred.resolve(authResult);
                             }, function(err) {
                                 deferred.reject(err);
                             });

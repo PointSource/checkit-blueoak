@@ -26,7 +26,7 @@ exports.init = function(logger, config, callback) {
 };
 
 function getAuthClient(callback){
-    
+
     var authClient = new google.auth.JWT(
         serviceAccount.email,
         path.resolve('./', serviceAccount.keyFile),
@@ -47,6 +47,26 @@ function getAuthClient(callback){
  * A call to this endpoint returns all the users associated with the apps registered google account
  */
 adminServices.getGoogleUsers = function(callback) {
+    var service = google.admin('directory_v1');
+    service.users.list({
+        domain: domain,
+        fields: 'users(primaryEmail, name)',
+        maxResults: 500, // Default is 100. Maximum is 500.
+        viewType: 'domain_public'
+    }, function(err, profiles) {
+        if (err){
+            return callback(new errors.DefaultError(err.code, 'Failed to retrieve the list of Google Users'));
+        } else {
+            console.log(profiles);
+            return callback(null, profiles);
+        }
+    });
+
+    // -----
+    // The code above is a start towards making the API call without the service account. Note the 'viewType' param.
+    // The code below is the existing code.
+    // -----
+
     getAuthClient(function(err, authClient){
         if (err) {
             return callback(new errors.DefaultError(500, 'Failed to authenticate the server with Google'));

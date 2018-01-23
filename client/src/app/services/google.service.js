@@ -40,7 +40,7 @@
              * @param assetId
              * @returns {*}
              */
-            getUserDirectory: function() {
+            getUserDirectory: function(accessToken) {
                 var defer,
                     request;
 
@@ -49,11 +49,16 @@
                 request = {
                     method: 'GET',
                     withCredentials: true,
-                    url: appConfig.apiHost + 'api/v1/admin/users/googleDirectory'
+                    url: appConfig.apiHost + 'api/v1/admin/users/googleDirectory',
+                    accessToken: accessToken,
+                    headers: {
+                        'Authorization': 'Bearer ' + accessToken
+                    }
                 };
 
                 $http(request)
                     .success(function(data) {
+                        console.log(data);
                         //GET is successful
                         UtilService.logInfo('services', 'GoogleUserService', 'getUserDirectory successful');
 
