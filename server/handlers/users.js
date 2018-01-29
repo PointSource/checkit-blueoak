@@ -26,7 +26,8 @@ module.exports = {
     },
     getGoogleUsers: function(req, res, next) {
         _logger.info('GETing from /api/v1/admin/users/googleDirectory');
-        var accessToken = req.body && req.body.access_token;
+        var accessToken = req.body && req.body.access_token,
+            filter = req.query && req.query.query;
         _googleapisService.adminServices.getGoogleUsers(function(err, result) {
             if (err) {
                 _logger.error(err);
@@ -34,7 +35,7 @@ module.exports = {
             } else {
                 res.status(200).send(result);
             }
-        }, accessToken);
+        }, accessToken, filter);
     },
     getUsers: function(req, res, next) {
         _logger.info('GETing from /api/v1/admin/users');
