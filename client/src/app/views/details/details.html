@@ -42,7 +42,7 @@
                                             <div class="date-input">
                                                 <div id="datepicker" dropdown-select="vm.ddSelectOptions" dropdown-model="vm.ddSelectSelected" dropdown-onchange="vm.ddChanged(selected)">
                                                 </div>
-                                                
+
                                             </div>
                                             <div class="date-image">
                                                 <img class="icon" src="assets/images/calendar_31x31.svg" alt="" />
@@ -68,17 +68,16 @@
                                         <button class="checkit-button" ng-click="vm.isCheckoutFor = true">Checkout for someone else?</button>
                                     </div>
                                     <div ng-show="vm.isCheckoutFor" class="input-block">
-                                        <!-- <div class="title">checkout for:</div> --> 
+                                        <!-- <div class="title">checkout for:</div> -->
                                         <div class="row">
                                             <angucomplete-alt class="email-input"
                                                     placeholder="Search employees"
                                                     pause="100"
                                                     selected-object="vm.checkoutFor"
-                                                    local-data="vm.userDirectory"
-                                                    local-search="vm.searchUsers"
+													remote-api-handler="vm.searchGoogleUsers"
                                                     title-field="name.fullName"
                                                     description-field="primaryEmail"
-                                                    minlength="1"/>
+                                                    minlength="3"/>
                                             <div class="email-image" ng-click="vm.isCheckoutFor = false; vm.checkoutFor.email = null">
                                                 <i class="fa fa-remove"></i>
                                             </div>

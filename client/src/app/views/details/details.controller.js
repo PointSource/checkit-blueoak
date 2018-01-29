@@ -13,7 +13,8 @@
         .controller('DetailsController', DetailsController);
 
     DetailsController.$inject = [
-        '$rootScope',
+		'$rootScope',
+		'$q',
         '$filter',
         'UtilService',
         'assetId',
@@ -35,6 +36,7 @@
      * The details page controller function. Calls the getAssets function from AssetService to get the details about
      * the requested asset (by assetId).
      * @param $rootScope
+	 * @param $q
      * @param $filter
      * @param UtilService
      * @param assetId -> id of the asset to get details for
@@ -49,8 +51,9 @@
      * @param moment
      * @constructor
      */
-    function DetailsController($rootScope,
-        $filter,
+	function DetailsController($rootScope,
+		$q,
+		$filter,
         UtilService,
         assetId,
         AssetService,
@@ -106,7 +109,7 @@
         vm.minDate = moment().toISOString();
 
         /**
-         * This function gets called every time the datepicker dropdown changes. 
+         * This function gets called every time the datepicker dropdown changes.
          * Changes the view to the custom date selection and resets the preselected
          * dates dropdown.
          * @param  {Object} selected The object the user last selected
@@ -223,7 +226,7 @@
 
                     if (vm.isAdmin) {
                         //is an admin checking in a device he/she checked out?
-                        if (vm.deviceData['active_reservations'][0].borrower.name.first === 'You') { 
+                        if (vm.deviceData['active_reservations'][0].borrower.name.first === 'You') {
                             AssetService.checkinAsset(vm.deviceData.id)
                                 .then(_updateDeviceData, _checkInFail);
                         } else {
@@ -235,7 +238,7 @@
                         AssetService.checkinAsset(vm.deviceData.id)
                             .then(_updateDeviceData, _checkInFail);
                     }
-                    
+
                 }
             }
         };
@@ -302,11 +305,11 @@
             var checkOut = function() {
                 //Hide buttons until operation done
                 vm.loadingState = '';
-                
+
                 if (vm.isCheckoutFor) { //If in the checkout for someone else state
-                    
+
                     //If the user is defined
-                    if (angular.isDefined(vm.checkoutFor) && angular.isDefined(vm.checkoutFor.originalObject)) { 
+                    if (angular.isDefined(vm.checkoutFor) && angular.isDefined(vm.checkoutFor.originalObject)) {
                         userInfo = {
                             email: vm.checkoutFor.description,
                             name: {
@@ -369,6 +372,21 @@
             });
             return matches;
         };
+
+		vm.searchGoogleUsers = function(str) {
+			if (vm.userDirectory) {
+				// try the pre-loaded directory first
+				var matches = vm.searchUsers(str);
+				if (matches.length > 0) {
+					return $q.resolve(matches);
+				}
+			} else {
+				// search
+				return GoogleUserService.getUserDirectory(str).then(function(data) {
+					return data && data.users ? data.users : []
+				});
+			}
+		};
 
         /**
          * On checkout success, page is reinitialized with the updated asset data and shows details.

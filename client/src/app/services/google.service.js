@@ -39,35 +39,31 @@
              * Makes an HTTP call to the server and GETs a list of user records
              * @returns {*}
              */
-            getUserDirectory: function() {
+            getUserDirectory: function(filter) {
+				if (gapi && gapi.client) {
+					return this.getGoogleUserDirectory(filter);
+				}
+
                 var defer,
                     request;
 
                 defer = $q.defer();
 
+				request = {
+					method: 'GET',
+					withCredentials: true,
+					url: appConfig.apiHost + 'api/v1/admin/users/googleDirectory?query=' + (filter ? filter : '')
+				};
+
 				var accessToken = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token;
 				if (accessToken) {
-					request = {
-						method: 'POST',
-						withCredentials: true,
-						url: appConfig.apiHost + 'api/v1/admin/users/googleDirectory',
-						data: {
-							access_token: accessToken
-						}
-					};
-				} else {
-					request = {
-						method: 'GET',
-						withCredentials: true,
-						url: appConfig.apiHost + 'api/v1/admin/users/googleDirectory'
-					};
+					request.body = {access_token: accessToken};
 				}
 
                 $http(request)
                     .success(function(data) {
                         //GET is successful
                         UtilService.logInfo('services', 'GoogleUserService', 'getUserDirectory successful');
-
                         defer.resolve(data);
                     })
                     .error(function(data, status) {
@@ -83,16 +79,20 @@
              * Makes an HTTP call directly to the Google Directory API and GETs a list of user records
              * @returns {*}
              */
-			getGoogleUserDirectory: function() {
+			getGoogleUserDirectory: function(filter) {
                 var defer;
                 defer = $q.defer();
 
 				var url = 'https://www.googleapis.com/admin/directory/v1/users' +
 							'?domain=' + appConfig.domain + '&viewType=domain_public&projection=basic';
+				if (filter) {
+					url = url + '&maxResults=10&query=' + filter;
+				}
                 gapi.client.request(url)
                     .then(function(data) {
                         //GET is successful
-                        UtilService.logInfo('services', 'GoogleUserService', 'getUserDirectory successful');
+						UtilService.logInfo('services', 'GoogleUserService', 'getUserDirectory successful');
+						data = data.result;
                         defer.resolve(data);
                     })
                     .catch(function(data, status) {

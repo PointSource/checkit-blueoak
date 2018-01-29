@@ -68,7 +68,7 @@
 				return q.reject('failed to initialize gapi client');
 			});
 			return q.promise;
-		};
+		}
 
         return {
             /**
@@ -88,7 +88,7 @@
                             scope: appConfig.googleScopes
                         });
 
-                        _this.auth.then(function(result) {
+                        _this.auth.then(function() {
 							return initGapiClient().then(function(){
 								return q.resolve('success');
 							});

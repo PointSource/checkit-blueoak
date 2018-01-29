@@ -62,7 +62,7 @@ function getAuthClient(callback, accessToken){
 /**
  * A call to this endpoint returns all the users associated with the apps registered google account
  */
-adminServices.getGoogleUsers = function(callback, accessToken) {
+adminServices.getGoogleUsers = function(callback, accessToken, filter) {
     getAuthClient(function(err, authClient){
         if (err) {
             return callback(new errors.DefaultError(500, 'Failed to authenticate the server with Google'));
@@ -71,8 +71,9 @@ adminServices.getGoogleUsers = function(callback, accessToken) {
             service.users.list({
                 domain: domain,
                 fields: 'users(primaryEmail, name)',
-                maxResults: 500, // Default is 100. Maximum is 500.
+                maxResults: filter ? 10 : 500, // Default is 100. Maximum is 500.
                 viewType: 'domain_public',
+                query: filter ? filter : '',
                 auth: authClient
             }, function(err, profiles) {
                 if (err){
