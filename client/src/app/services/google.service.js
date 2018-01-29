@@ -36,8 +36,7 @@
         return {
 
             /**
-             * Makes an HTTP call to the server and GETs a list of records
-             * @param assetId
+             * Makes an HTTP call to the server and GETs a list of user records
              * @returns {*}
              */
             getUserDirectory: function() {
@@ -46,11 +45,23 @@
 
                 defer = $q.defer();
 
-                request = {
-                    method: 'GET',
-                    withCredentials: true,
-                    url: appConfig.apiHost + 'api/v1/admin/users/googleDirectory'
-                };
+				var accessToken = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token;
+				if (accessToken) {
+					request = {
+						method: 'POST',
+						withCredentials: true,
+						url: appConfig.apiHost + 'api/v1/admin/users/googleDirectory',
+						data: {
+							access_token: accessToken
+						}
+					};
+				} else {
+					request = {
+						method: 'GET',
+						withCredentials: true,
+						url: appConfig.apiHost + 'api/v1/admin/users/googleDirectory'
+					};
+				}
 
                 $http(request)
                     .success(function(data) {
@@ -65,7 +76,32 @@
                         defer.reject(data);
                     });
                 return defer.promise;
-            },
+			},
+
+
+            /**
+             * Makes an HTTP call directly to the Google Directory API and GETs a list of user records
+             * @returns {*}
+             */
+			getGoogleUserDirectory: function() {
+                var defer;
+                defer = $q.defer();
+
+				var url = 'https://www.googleapis.com/admin/directory/v1/users' +
+							'?domain=' + appConfig.domain + '&viewType=domain_public&projection=basic';
+                gapi.client.request(url)
+                    .then(function(data) {
+                        //GET is successful
+                        UtilService.logInfo('services', 'GoogleUserService', 'getUserDirectory successful');
+                        defer.resolve(data);
+                    })
+                    .catch(function(data, status) {
+                        // GET is unsuccessful
+                        UtilService.logError('services', 'GoogleUserService',  status);
+                        defer.reject(data);
+                    });
+                return defer.promise;
+			},
 
             /**
              * Saves the Google Directory data to session storage

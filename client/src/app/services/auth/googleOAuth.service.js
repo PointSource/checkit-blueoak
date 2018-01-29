@@ -55,6 +55,21 @@
             };
         }
 
+		/**
+		 * Initializes the gapi client API for requests to the Directory API
+		 * Access tokens are automatically handled through gapi.
+		 */
+		function initGapiClient() {
+			var q = $q.defer();
+			gapi.load('client', function(){
+				return $q.resolve();
+			}, function(err) {
+				$log.log(err);
+				return q.reject('failed to initialize gapi client');
+			});
+			return q.promise;
+		};
+
         return {
             /**
              * Initializes google auth for web based applications
@@ -67,16 +82,16 @@
                     q.resolve('On Device');
                 } else {
                     _this.onDevice = false;
-
-
                     gapi.load('auth2', function() {
                         _this.auth = gapi.auth2.init({
                             client_id: appConfig.googleClientId,
                             scope: appConfig.googleScopes
                         });
 
-                        _this.auth.then(function() {
-                            q.resolve('success');
+                        _this.auth.then(function(result) {
+							return initGapiClient().then(function(){
+								return q.resolve('success');
+							});
                         }, function(err) {
                             $log.log(err);
                             q.reject('failed to initialize');
@@ -85,7 +100,8 @@
                 }
 
                 return q.promise;
-            },
+			},
+
 
             /**
              * Logs user in with Google
