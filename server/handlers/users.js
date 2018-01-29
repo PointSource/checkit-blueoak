@@ -15,7 +15,6 @@ module.exports = {
     },
     getUserReservations: function(req, res, next){
         _logger.info('GETing from /api/v1/users/reservations using', req.session.email);
-        console.log(req.session.email);
         _usersService.getUserReservations(req.session.email, function(err, result) {
             if (err) {
                 _logger.error(err);
@@ -27,6 +26,7 @@ module.exports = {
     },
     getGoogleUsers: function(req, res, next) {
         _logger.info('GETing from /api/v1/admin/users/googleDirectory');
+        var accessToken = req.body && req.body.access_token;
         _googleapisService.adminServices.getGoogleUsers(function(err, result) {
             if (err) {
                 _logger.error(err);
@@ -34,7 +34,7 @@ module.exports = {
             } else {
                 res.status(200).send(result);
             }
-        });
+        }, accessToken);
     },
     getUsers: function(req, res, next) {
         _logger.info('GETing from /api/v1/admin/users');

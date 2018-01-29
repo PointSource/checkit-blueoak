@@ -5,9 +5,10 @@
             "os": ["iOS", "Android", "Windows", "WatchOS", "FireOS", "OSX", "N/A"],
             "type": ["phone", "tablet", "laptop", "camera", "software", "book", "misc"],
             "location": ["Raleigh", "Chicago"]
-        },
+		},
+		"domain": "SET_DOMAIN_HERE",
         "googleClientId": "SET_GOOGLE_CLIENT_ID_HERE",
-        "googleScopes": "https://www.googleapis.com/auth/userinfo.email",
+        "googleScopes": "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/admin.directory.user.readonly",
         "buildType": "debug"
     }
 }

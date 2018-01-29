@@ -47,7 +47,7 @@
          * Email becomes primaryEmail, name.last becomes name.familyName,
          * name.first becomes name.givenName, and a fullName field is added to name.
          * @param  {object} json The user data
-         * @return {object} the remapped data  
+         * @return {object} the remapped data
          */
         function _remapCheckITUserData(json){
             var users = [];
@@ -76,11 +76,14 @@
         var _getEmployeeData = function() {
             var q = $q.defer();
 
-            GoogleUserService.getUserDirectory().then(function(data){
+			// Option to either use direct Google service or legacy server passthrough
+            //GoogleUserService.getGoogleUserDirectory()
+			GoogleUserService.getUserDirectory()
+				.then(function(data){
                     q.resolve(data);
                 },function(err){ //If the Google Directory call fails, fallback to the CheckIT database
                     UserService.getUsers().then(function(data){
-                        UtilService.logError('signin', 'SigninController', 'Error using Google Direcotry API: ' + 
+                        UtilService.logError('signin', 'SigninController', 'Error using Google Direcotry API: ' +
                             err + 'Defaulting to CheckIT database...');
                         var remappedData = _remapCheckITUserData(data);
                         q.resolve(remappedData);
@@ -169,7 +172,7 @@
              */
             isAuthenticated: function() {
                 return (getIsAuthenticated() === 'true');
-            },
+			},
 
             /**
              * initializes all auth providers as necessary
