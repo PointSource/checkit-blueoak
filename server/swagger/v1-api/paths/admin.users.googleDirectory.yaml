@@ -1,27 +1,29 @@
-get:
-  description: 'Returns an array of Google users associated with the Google account domain
-
-    '
+post:
+  consumes: [application/json]
+  description: 'Returns an array of Google users associated with the Google account domain using access token of current user
+  
+  '
   operationId: getGoogleUsers
-  produces: [application/json]
   parameters:
-  - {description: filter by name or email, in: query, name: query, required: true,
-    type: string}
+  - {description: filter by name or email, in: body, name: query, required: true,
+    type: string}    
   - description: Google access token
     in: body
     name: access_token
     required: true
-    schema: {$ref: '../definitions/AccessToken.yaml'}    
+    schema: {$ref: '../definitions/AccessToken.yaml'}  
+  produces: [application/json]
   responses:
     '200':
       description: returns an array of the Google user's associated with this account
       schema: {$ref: '../definitions/GoogleUsers.yaml'}
     '401':
-      description: attempted to get list of Google user's before authorization
+      description: Access token incorrect or expired
       schema: {$ref: '../definitions/AuthorizationError.yaml'}
     default:
       description: unexpected error
       schema: {$ref: '../definitions/DefaultError.yaml'}
-  summary: Google Users
+  summary: Google users
   tags: [Users]
-  x-middleware: [auth.authenticateHandler]
+  x-middleware: [auth.authenticateHandler]    
+x-handler: users  
