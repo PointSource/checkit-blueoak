@@ -27,7 +27,7 @@ module.exports = {
     getGoogleUsers: function(req, res, next) {
         _logger.info('GETing from /api/v1/admin/users/googleDirectory');
         var accessToken = req.body && req.body.access_token,
-            filter = req.query && req.query.query;
+            filter = req.body && req.body.query;
         _googleapisService.adminServices.getGoogleUsers(function(err, result) {
             if (err) {
                 _logger.error(err);

@@ -50,14 +50,17 @@
                 defer = $q.defer();
 
 				request = {
-					method: 'GET',
+					method: 'POST',
 					withCredentials: true,
-					url: appConfig.apiHost + 'api/v1/admin/users/googleDirectory?query=' + (filter ? filter : '')
+					url: appConfig.apiHost + 'api/v1/admin/users/googleDirectory',
+					body: {
+						query: filter ? filter : ''
+					}
 				};
 
 				var accessToken = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token;
 				if (accessToken) {
-					request.body = {access_token: accessToken};
+					request.body.access_token = accessToken;
 				}
 
                 $http(request)
