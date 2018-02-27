@@ -172,7 +172,7 @@
              */
             isAuthenticated: function() {
                 return (getIsAuthenticated() === 'true');
-			},
+            },
 
             /**
              * initializes all auth providers as necessary
@@ -203,6 +203,7 @@
                 if (method === 'google') {
                     GoogleService.login(appConfig.apiKeys).then(function(authResult) {
                             _loginSuccess(authResult.idToken).then(function() {
+                                GoogleUserService.setAccessToken(authResult.accessToken);
                                 deferred.resolve(authResult);
                                 setIsAuthenticated(true);
                             }, function(err) {
@@ -231,6 +232,7 @@
 
                 GoogleService.silentLogin(appConfig.apiKeys).then(function(authResult) {
                     _loginSuccess(authResult.idToken).then(function() {
+                        GoogleUserService.setAccessToken(authResult.accessToken);
                         setIsAuthenticated(true);
                         deferred.resolve(authResult);
                     }, function(err) {
@@ -252,6 +254,7 @@
              */
             logout: function() {
                 ValidationService.clearValidation(); //clears asset validation
+                GoogleUserService.setAccessToken('');
 
                 var defer = $q.defer();
                 var request = {

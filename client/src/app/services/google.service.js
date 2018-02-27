@@ -33,6 +33,9 @@
      *
      */
     function GoogleUserService($q, appConfig, $http, UtilService) {
+        var vm = this;
+        vm.accessToken = '';
+
         return {
 
             /**
@@ -58,9 +61,8 @@
 					}
 				};
 
-				var accessToken = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token;
-				if (accessToken) {
-					request.body.access_token = accessToken;
+				if (vm.accessToken !== '') {
+					request.body.access_token = vm.accessToken;
 				}
 
                 $http(request)
@@ -120,6 +122,13 @@
              */
             getUserDirectoryData: function() {
                 return angular.fromJson(sessionStorage.getItem('userDirectory'));
+            },
+
+            /**
+             * Sets the accessToken of the authenticated user
+             */
+            setAccessToken: function(accessToken) {
+                vm.accessToken = accessToken;
             }
         };
     }
