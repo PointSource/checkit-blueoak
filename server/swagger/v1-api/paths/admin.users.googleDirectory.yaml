@@ -5,8 +5,6 @@ post:
   '
   operationId: getGoogleUsers
   parameters:
-  - {description: filter by name or email, in: body, name: query, required: true,
-    type: string}    
   - description: Google access token
     in: body
     name: access_token

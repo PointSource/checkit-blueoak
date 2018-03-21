@@ -55,15 +55,18 @@
 				request = {
 					method: 'POST',
 					withCredentials: true,
-					url: appConfig.apiHost + 'api/v1/admin/users/googleDirectory',
-					body: {
+                    url: appConfig.apiHost + 'api/v1/admin/users/googleDirectory',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+					data: {
 						query: filter ? filter : ''
 					}
-				};
+                };
 
 				if (vm.accessToken !== '') {
-					request.body.access_token = vm.accessToken;
-				}
+					request.data.access_token = vm.accessToken;
+                }
 
                 $http(request)
                     .success(function(data) {
