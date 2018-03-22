@@ -4,7 +4,7 @@
     "description": "A tool for checking out devices for testing purposes.",
     "main": "index.js",
     "license": "MIT",
-    "author": "PointSource LLC <github@pointsource.com>",
+    "author": "PointSource LLC <pointsource-github@globant.com>",
     "scripts": {
         "test": "mocha test"
     },

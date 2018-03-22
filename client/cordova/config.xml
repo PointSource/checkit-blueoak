@@ -4,7 +4,7 @@
     <description>
         An application to checkout and reserve devices.
     </description>
-    <author email="github@pointsource.com" href="http://pointsource.com">
+    <author email="pointsource-github@globant.com" href="https://www.pointsource.com/">
         PointSource, LLC
     </author>
     <content src="index.html" />

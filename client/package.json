@@ -2,7 +2,7 @@
     "name": "checkit-blueoak",
     "version": "3.3.1",
     "license": "MIT",
-    "author": "PointSource LLC <github@pointsource.com>",
+    "author": "PointSource LLC <pointsource-github@globant.com>",
     "dependencies": {
         "cordova": "^4.2.0",
         "front-matter": "^0.2.0",
