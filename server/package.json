@@ -1,6 +1,6 @@
 {
     "name": "checkit-blueoak",
-    "version": "3.3.0",
+    "version": "3.3.1",
     "description": "A tool for checking out devices for testing purposes.",
     "main": "index.js",
     "license": "MIT",
@@ -13,7 +13,7 @@
         "blueoak-server": "^2.0.1",
         "googleapis": "^19.0.0",
         "gridfs-stream": "^1.1.1",
-        "moment": "~2.9.0",
+        "moment": "^2.21.0",
         "mongodb": "~2.0",
         "mongoose": "^4.0.2",
         "request": "^2.51.0",
