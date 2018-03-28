@@ -8,6 +8,8 @@
 sed -i "s|http://localhost:3000|$API|g" $WORKSPACE/client/src/app.config.json
 # Injects the Allowed Origins into the server/config/default.json file
 sed -i "s|http://localhost:3001|$ALLOWED_ORIGINS|g" $WORKSPACE/server/config/default.json
+# Injects the Google domain into the client/src/app.config.json file
+sed -i "s|SET_DOMAIN_HERE|$GOOGLE_DOMAIN|g" $WORKSPACE/client/src/app.config.json
 # Injects the Google client ID into the client/src/app.config.json file
 sed -i "s|SET_GOOGLE_CLIENT_ID_HERE|$GOOGLE_CLIENT_ID|g" $WORKSPACE/client/src/app.config.json
 # Injects the Mongo DB host into the server/config/default.json file
@@ -45,6 +47,8 @@ fi
 sed -i "s|\"companyDomains\":\ \[\]|$COMPANY_DOMAINS|g" $WORKSPACE/server/config/default.json
 # Injects the reverse client ID into the client/cordova/package.json file
 sed -i "s|SET_IOS_REVERSE_CLIENT_ID_HERE|$IOS_REVERSE_CLIENT_ID|g" $WORKSPACE/client/cordova/package.json
+# Injects the Google client ID into the server/services/googleapisService.js file
+sed -i "s|SET_GOOGLE_CLIENT_ID_HERE|$GOOGLE_CLIENT_ID|g" $WORKSPACE/server/services/googleapisService.js
 
 # Log that private information has been successfully injected
 echo "Private information successfully injected"

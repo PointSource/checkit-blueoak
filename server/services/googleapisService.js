@@ -29,7 +29,7 @@ exports.init = function(logger, config, callback) {
 function getOAuthClient(accessToken) {
   var OAuth2 = google.auth.OAuth2;
   _logger.info('access token 2: ', accessToken)
-  var oauth2Client = new OAuth2('GOOGLE_CLIENT_ID');
+  var oauth2Client = new OAuth2('SET_GOOGLE_CLIENT_ID_HERE');
   oauth2Client.setCredentials({
     access_token: accessToken
   });  

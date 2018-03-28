@@ -61,6 +61,8 @@ echo
 echo 'Injecting private information into the following files'
 echo '  - client/src/app.config.json'
 echo '  - server/config/default.json'
+echo '  - client/cordova/package.json'
+echo '  - server/services/googleapisService.js'
 echo
 
 . ./scripts/inject-private-info.sh
