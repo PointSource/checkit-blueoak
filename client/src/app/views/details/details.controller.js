@@ -140,7 +140,7 @@
          */
         vm.getData = function() {
             vm.loadingState = ''; //Used when making api calls
-            vm.pageState = 'infoView'; //Used fto switch between various views on the page
+            vm.pageState = 'infoView'; //Used to switch between various views on the page
             if (UserService.getUserRole() === 1) {
                 vm.userDirectory = GoogleUserService.getUserDirectoryData();
             }
@@ -375,7 +375,7 @@
 
 		vm.searchGoogleUsers = function(str) {
 			if (vm.userDirectory) {
-				// try the pre-loaded directory first
+				// use the cached userDirectory
 				var matches = vm.searchUsers(str);
 				if (matches.length > 0) {
 					return $q.resolve(matches);
@@ -383,7 +383,7 @@
 			} else {
 				// search
 				return GoogleUserService.getUserDirectory(str).then(function(data) {
-					return data && data.users ? data.users : []
+					return data && data.users ? $q.resolve(data.users) : $q.resolve([]);
 				});
 			}
 		};
