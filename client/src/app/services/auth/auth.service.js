@@ -121,8 +121,10 @@
                     UserService.setUserData(data);
                     if (UserService.getUserRole() === 1) {
                         _getEmployeeData(data).then(function(result){
+                            if (!result.nextPageToken) {
+                                GoogleUserService.setUserDirectoryData(result);
+                            }
                             deferred.resolve();
-                            GoogleUserService.setUserDirectoryData(result);
                         },function(){
                             deferred.resolve();
                         });
