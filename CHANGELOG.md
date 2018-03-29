@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 
+## [3.4.0] - 2018-03-29
+
+### Changed
+
+- Typeahead (user lookup) functionality now uses current user's authentication to authenticate with Google Directory API.
+- User directory data will be cached for small organizations and filtered from Google API for large organizations.
+- Setup scripts updated for typeahead changes.
+
+### Deprecated
+
+- Use of service account to authenticate with Google Directory API.
+
 ## [3.3.1] - 2018-03-22
 
 ### Security
@@ -104,7 +116,8 @@ Initial public release for CheckIT.
 - Admin users can add, edit, and remove devices.
 - Admin users can check out and check in assets for someone else.
 
-[Unreleased]: https://github.com/PointSource/checkit-blueoak/compare/v3.3.1...master
+[Unreleased]: https://github.com/PointSource/checkit-blueoak/compare/v3.4.0...master
+[3.4.0]: https://github.com/PointSource/checkit-blueoak/compare/v3.3.1...v3.4.0
 [3.3.1]: https://github.com/PointSource/checkit-blueoak/compare/v3.3.0...v3.3.1
 [3.3.0]: https://github.com/PointSource/checkit-blueoak/compare/v3.2.0...v3.3.0
 [3.2.0]: https://github.com/PointSource/checkit-blueoak/compare/v3.1.1...v3.2.0
