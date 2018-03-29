@@ -33,30 +33,45 @@
      *
      */
     function GoogleUserService($q, appConfig, $http, UtilService) {
+        var vm = this;
+        vm.accessToken = '';
+
         return {
 
             /**
-             * Makes an HTTP call to the server and GETs a list of records
-             * @param assetId
+             * Makes an HTTP call to the server and GETs a list of user records
              * @returns {*}
              */
-            getUserDirectory: function() {
+            getUserDirectory: function(filter) {
+				if (gapi && gapi.client) {
+					return this.getGoogleUserDirectory(filter);
+				}
+
                 var defer,
                     request;
 
                 defer = $q.defer();
 
-                request = {
-                    method: 'GET',
-                    withCredentials: true,
-                    url: appConfig.apiHost + 'api/v1/admin/users/googleDirectory'
+				request = {
+					method: 'POST',
+					withCredentials: true,
+                    url: appConfig.apiHost + 'api/v1/admin/users/googleDirectory',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+					data: {
+						query: filter ? filter : ''
+					}
                 };
+
+				if (vm.accessToken !== '') {
+					request.data.access_token = vm.accessToken;
+                }
 
                 $http(request)
                     .success(function(data) {
                         //GET is successful
                         UtilService.logInfo('services', 'GoogleUserService', 'getUserDirectory successful');
-
                         defer.resolve(data);
                     })
                     .error(function(data, status) {
@@ -65,7 +80,36 @@
                         defer.reject(data);
                     });
                 return defer.promise;
-            },
+			},
+
+
+            /**
+             * Makes an HTTP call directly to the Google Directory API and GETs a list of user records
+             * @returns {*}
+             */
+			getGoogleUserDirectory: function(filter) {
+                var defer;
+                defer = $q.defer();
+
+				var url = 'https://www.googleapis.com/admin/directory/v1/users' +
+							'?domain=' + appConfig.domain + '&viewType=domain_public&projection=basic';
+				if (filter) {
+					url = url + '&maxResults=10&query=' + filter;
+				}
+                gapi.client.request(url)
+                    .then(function(data) {
+                        //GET is successful
+						UtilService.logInfo('services', 'GoogleUserService', 'getUserDirectory successful');
+						data = data.result;
+                        defer.resolve(data);
+                    })
+                    .catch(function(data, status) {
+                        // GET is unsuccessful
+                        UtilService.logError('services', 'GoogleUserService',  status);
+                        defer.reject(data);
+                    });
+                return defer.promise;
+			},
 
             /**
              * Saves the Google Directory data to session storage
@@ -81,6 +125,13 @@
              */
             getUserDirectoryData: function() {
                 return angular.fromJson(sessionStorage.getItem('userDirectory'));
+            },
+
+            /**
+             * Sets the accessToken of the authenticated user
+             */
+            setAccessToken: function(accessToken) {
+                vm.accessToken = accessToken;
             }
         };
     }

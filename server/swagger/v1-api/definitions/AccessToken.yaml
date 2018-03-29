@@ -1,0 +1,6 @@
+properties:
+  user:
+    properties:
+      access_token: {description: the oauth access token from Google login, type: string}
+    type: object
+type: object
