@@ -379,6 +379,8 @@
 				var matches = vm.searchUsers(str);
 				if (matches.length > 0) {
 					return $q.resolve(matches);
+				} else {
+					return $q.resolve([]);
 				}
 			} else {
 				// search
