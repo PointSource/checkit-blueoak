@@ -111,7 +111,10 @@
                 var q = $q.defer();
 
                 if (_this.onDevice) {
-                    $window.plugins.googleplus.login({ webClientId: appConfig.googleClientId },
+                    $window.plugins.googleplus.login({
+							webClientId: appConfig.googleClientId,
+							scopes: appConfig.googleScopes
+						},
                         function(response) {
                             q.resolve(response);
                         },
