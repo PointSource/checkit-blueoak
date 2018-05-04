@@ -165,7 +165,8 @@
                 if (_this.onDevice) {
                     $log.log('Device Ready');
                     $window.plugins.googleplus.trySilentLogin({
-                            webClientId: appConfig.googleClientId
+                            webClientId: appConfig.googleClientId,
+                            scopes: appConfig.googleScopes
                         },
                         function(response) {
                             q.resolve(response);
