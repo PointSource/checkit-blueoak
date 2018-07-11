@@ -204,8 +204,8 @@
                 //startgoogle
                 if (method === 'google') {
                     GoogleService.login(appConfig.apiKeys).then(function(authResult) {
+                            GoogleUserService.setAccessToken(authResult.accessToken);
                             _loginSuccess(authResult.idToken).then(function() {
-                                GoogleUserService.setAccessToken(authResult.accessToken);
                                 deferred.resolve(authResult);
                                 setIsAuthenticated(true);
                             }, function(err) {
@@ -233,8 +233,8 @@
                 var deferred = $q.defer();
 
                 GoogleService.silentLogin(appConfig.apiKeys).then(function(authResult) {
+                    GoogleUserService.setAccessToken(authResult.accessToken);
                     _loginSuccess(authResult.idToken).then(function() {
-                        GoogleUserService.setAccessToken(authResult.accessToken);
                         setIsAuthenticated(true);
                         deferred.resolve(authResult);
                     }, function(err) {

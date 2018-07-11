@@ -70,7 +70,7 @@ adminServices.getGoogleUsers = function(callback, accessToken, filter) {
             var service = google.admin('directory_v1');
             service.users.list({
                 domain: domain,
-                fields: 'users(primaryEmail, name)',
+                fields: 'users(primaryEmail,name),nextPageToken',
                 maxResults: filter ? 10 : 500, // Default is 100. Maximum is 500.
                 viewType: 'domain_public',
                 query: filter ? filter : '',
