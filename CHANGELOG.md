@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- User not authenticated immediately upon login.
+- Typeahead results when no results are found.
+- Mobile application now has proper Google scopes.
+- Flag is now returned to indicate when there is more than the max number of users returned from the Google API.
+
 ## [3.4.0] - 2018-03-29
 
 ### Changed
