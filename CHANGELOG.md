@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [3.4.1] - 2018-07-11
+
 ### Fixed
 
 - User not authenticated immediately upon login.
@@ -123,7 +125,8 @@ Initial public release for CheckIT.
 - Admin users can add, edit, and remove devices.
 - Admin users can check out and check in assets for someone else.
 
-[Unreleased]: https://github.com/PointSource/checkit-blueoak/compare/v3.4.0...master
+[Unreleased]: https://github.com/PointSource/checkit-blueoak/compare/v3.4.1...master
+[3.4.1]: https://github.com/PointSource/checkit-blueoak/compare/v3.4.0...v3.4.1
 [3.4.0]: https://github.com/PointSource/checkit-blueoak/compare/v3.3.1...v3.4.0
 [3.3.1]: https://github.com/PointSource/checkit-blueoak/compare/v3.3.0...v3.3.1
 [3.3.0]: https://github.com/PointSource/checkit-blueoak/compare/v3.2.0...v3.3.0
